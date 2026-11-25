@@ -287,6 +287,16 @@ class ConfigurationTest : FunSpec({
             container.get<Greeter>().greet() shouldBe HALLO
         }
 
+        test("replace a definition only in the profiles of the replacement") {
+            val fake = module("fake") { variant(MOCK) { single<Greeter> { GermanGreeter() } } }
+
+            val live = containerOf(greeter, profile = LIVE) { replace(fake) }
+            val mocked = containerOf(greeter, profile = MOCK) { replace(fake) }
+
+            live.get<Greeter>().greet() shouldBe HELLO
+            mocked.get<Greeter>().greet() shouldBe HALLO
+        }
+
         test("refuse a replacement of nothing and duplicates among replacements") {
             violationsOf {
                 modules(greeter)

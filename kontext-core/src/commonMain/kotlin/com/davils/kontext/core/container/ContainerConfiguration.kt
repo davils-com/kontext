@@ -191,7 +191,7 @@ public class ContainerConfiguration internal constructor(builder: ContainerBuild
     }
 
     internal fun declarations(): List<Declaration> {
-        val replacing = replacing()
+        val replacing = replacing().filter { declaration -> declaration.appliesTo(profile) }
         val kept = declared().filterNot { declaration -> replacing.any { other -> other.conflictsWith(declaration) } }
         val builtIn = listOfNotNull(profileDeclaration(profile).takeIf { parent?.profile != profile })
         return (builtIn + kept + replacing).filter { declaration -> declaration.appliesTo(profile) }
