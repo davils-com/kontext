@@ -48,6 +48,10 @@ public object JavaModules {
     /**
      * Starts a container in [profile], blocking the calling thread until it runs.
      *
+     * It blocks with `runBlocking`, so it must never be called from a coroutine or from an event-loop thread, such as
+     * the thread of a UI or of a non-blocking server, where it can stall or deadlock that thread; such code calls
+     * the suspending [container] instead.
+     *
      * @param profile the profile.
      * @param configure configures the container.
      * @return the running container.
@@ -60,6 +64,9 @@ public object JavaModules {
 
     /**
      * Closes [container], blocking the calling thread until it is closed.
+     *
+     * It blocks with `runBlocking`, so it must never be called from a coroutine or from an event-loop thread, where
+     * it can stall or deadlock that thread; such code calls the suspending [Container.close] instead.
      *
      * @param container the container.
      * @return the report.

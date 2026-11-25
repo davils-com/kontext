@@ -24,7 +24,9 @@ import com.davils.kontext.core.Resolver
  *
  * A container asks its fallbacks in the order of their registration when no definition matches a key, and takes the
  * first answer that is not `null`. An answer must be an instance of the type of the key; anything else fails the
- * resolution with [com.davils.kontext.core.error.ResolutionFailure.Mismatched] instead of a later cast error. The
+ * resolution with [com.davils.kontext.core.error.ResolutionFailure.Mismatched] instead of a later cast error. Only the
+ * classifier of the key is checked, since type arguments are erased at runtime: a fallback that answers a key of
+ * `List<String>` with a `List<Int>` is not refused, so a fallback must check the type arguments of the key itself. The
  * container neither caches nor closes what a fallback supplies. A fallback that throws fails the resolution with
  * [com.davils.kontext.core.error.ResolutionFailure.Failed].
  *

@@ -20,7 +20,8 @@ import com.davils.kontext.core.Qualifier
 import com.davils.kontext.core.parameter.Parameters
 
 /**
- * Resolves the instance of [T] on first use, from the resolver of the component at that time.
+ * Resolves the instance of [T] on first use, from the resolver of the component at that time, and keeps it: a later
+ * change of the resolver, such as a restart of the holder of a [GlobalComponent], is not seen.
  *
  * @param T the type of the definition.
  * @param qualifier the qualifier, `null` for none.
@@ -34,7 +35,8 @@ public inline fun <reified T : Any> ContainerComponent.inject(
 ): Lazy<T> = lazy { resolver.get<T>(qualifier, parameters) }
 
 /**
- * Resolves the instance of [T] on first use, or `null` if nothing is declared under its key.
+ * Resolves the instance of [T] on first use, or `null` if nothing is declared under its key, and keeps it like
+ * [inject].
  *
  * @param T the type of the definition.
  * @param qualifier the qualifier, `null` for none.

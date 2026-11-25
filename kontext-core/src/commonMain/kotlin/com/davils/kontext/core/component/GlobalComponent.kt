@@ -23,6 +23,11 @@ import com.davils.kontext.core.holder.GlobalContainerApi
 /**
  * A component that resolves from the [GlobalContainer], for code migrating from a global injection context.
  *
+ * [get] resolves from the container the global holder holds at the call. A value of [inject] or [injectOrNull] is
+ * resolved once and kept: after the global holder is stopped and started again, the component still returns the
+ * instance of the closed container, which may already be closed. A component that outlives a restart of the holder
+ * resolves with [get] on every use, or is created again.
+ *
  * @since 1.0.0
  */
 @GlobalContainerApi
