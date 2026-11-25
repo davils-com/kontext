@@ -17,6 +17,7 @@
 package com.davils.kontext.core.java
 
 import com.davils.kontext.core.DefinitionContext
+import com.davils.kontext.core.DefinitionKey
 import com.davils.kontext.core.Qualifier
 import com.davils.kontext.core.definition.Definition
 import com.davils.kontext.core.definition.Lifetime
@@ -30,10 +31,13 @@ import java.util.function.Function
  * @since 1.0.0
  */
 public class JavaModuleBuilder internal constructor(private val builder: ModuleBuilder) {
-    private val definitions = HashMap<Class<*>, Definition<*>>()
+    private val definitions = HashMap<DefinitionKey, Definition<*>>()
 
     /**
      * Declares a single of [type] created by [create].
+     *
+     * Since a raw or unchecked Java factory can return an object of any class, the instance is checked against
+     * [type]: an instance of another class fails the resolution with a [ClassCastException] as its cause.
      *
      * @param T the type.
      * @param type the class the instance is found by.
@@ -52,6 +56,9 @@ public class JavaModuleBuilder internal constructor(private val builder: ModuleB
     /**
      * Declares a factory of [type] created by [create] on every resolution.
      *
+     * Since a raw or unchecked Java factory can return an object of any class, the instance is checked against
+     * [type]: an instance of another class fails the resolution with a [ClassCastException] as its cause.
+     *
      * @param T the type.
      * @param type the class the instance is found by.
      * @param qualifier the qualifier, `null` for none.
@@ -67,17 +74,31 @@ public class JavaModuleBuilder internal constructor(private val builder: ModuleB
     ): JavaModuleBuilder = declared(type = type, qualifier = qualifier, lifetime = Lifetime.Factory, create = create)
 
     /**
-     * Makes the definition of [type] found as [as] as well, such as an implementation under its interface.
+     * Makes the definition of [type] with [qualifier] found as [as] with [asQualifier] as well, such as an
+     * implementation under its interface.
      *
      * @param type the class of a definition this builder declared.
-     * @param as the further class.
+     * @param as the further class, a supertype of [type] or [type] itself.
+     * @param qualifier the qualifier of the definition of [type], `null` for none.
+     * @param asQualifier the qualifier of the binding, `null` for none.
      * @return this builder.
-     * @throws IllegalArgumentException if this builder declares no definition of [type].
+     * @throws IllegalArgumentException if this builder declares no definition of [type] with [qualifier], if [as] is
+     * not a supertype of [type], or if the definition is already found as [as] with [asQualifier].
      * @since 1.0.0
      */
-    public fun bind(type: Class<*>, `as`: Class<*>): JavaModuleBuilder {
-        val definition = requireNotNull(definitions[type]) { "No definition of ${type.name} is declared here" }
-        definition.alias(JavaResolvers.keyOf(`as`))
+    @JvmOverloads
+    public fun bind(
+        type: Class<*>,
+        `as`: Class<*>,
+        qualifier: Qualifier? = null,
+        asQualifier: Qualifier? = null,
+    ): JavaModuleBuilder {
+        val key = JavaResolvers.keyOf(type, qualifier)
+        val definition = requireNotNull(definitions[key]) { "No definition of $key is declared here" }
+        require(`as`.isAssignableFrom(type)) {
+            "${type.name} cannot be found as ${`as`.name}, which it does not extend"
+        }
+        definition.alias(JavaResolvers.keyOf(`as`, asQualifier))
         return this
     }
 
@@ -87,14 +108,20 @@ public class JavaModuleBuilder internal constructor(private val builder: ModuleB
         lifetime: Lifetime,
         create: Function<DefinitionContext, T>,
     ): JavaModuleBuilder {
+        val key = JavaResolvers.keyOf(type, qualifier)
         val definition = builder.declareSync<T>(
-            key = JavaResolvers.keyOf(type, qualifier),
+            key = key,
             lifetime = lifetime,
-            create = { create.apply(this) },
+            create = { checked(type = type, instance = create.apply(this)) },
         )
-        definitions[type] = definition
+        definitions[key] = definition
         return this
     }
 
     override fun toString(): String = "JavaModuleBuilder(${builder.name})"
+}
+
+private fun <T : Any> checked(type: Class<T>, instance: Any): T {
+    if (type.isInstance(instance)) return type.cast(instance)
+    throw ClassCastException("The factory of ${type.name} returned an instance of ${instance.javaClass.name}")
 }

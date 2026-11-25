@@ -16,10 +16,13 @@
 
 package com.davils.kontext.core.java
 
+import com.davils.kontext.core.DefinitionContext
 import com.davils.kontext.core.DefinitionKey
 import com.davils.kontext.core.Profile
 import com.davils.kontext.core.Qualifier
 import com.davils.kontext.core.container
+import com.davils.kontext.core.error.ResolutionException
+import com.davils.kontext.core.error.ResolutionFailure
 import com.davils.kontext.core.fixture.EnglishGreeter
 import com.davils.kontext.core.fixture.Greeter
 import com.davils.kontext.core.fixture.Service
@@ -29,11 +32,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import java.util.function.Function
 
 private const val HELLO: String = "hello"
+private val FIRST: Qualifier = Qualifier("first")
+private val SECOND: Qualifier = Qualifier("second")
 
 class JavaInteropTest : FunSpec({
     test("a class finds the definition of the same type declared from Kotlin") {
@@ -64,5 +70,43 @@ class JavaInteropTest : FunSpec({
             JavaModules.module("broken") { builder -> builder.bind(Service::class.java, Greeter::class.java) }
         }
         JavaModules.close(started).isClean shouldBe true
+    }
+
+    test("a binding targets the definition of its class and qualifier and only a supertype") {
+        val first = EnglishGreeter()
+        val second = EnglishGreeter()
+        val declared = JavaModules.module("java") { builder ->
+            builder.single(EnglishGreeter::class.java, FIRST, Function { first })
+            builder.single(EnglishGreeter::class.java, SECOND, Function { second })
+            builder.bind(EnglishGreeter::class.java, Greeter::class.java, SECOND)
+            builder.bind(
+                type = EnglishGreeter::class.java,
+                `as` = Greeter::class.java,
+                qualifier = FIRST,
+                asQualifier = FIRST,
+            )
+            builder.single(Service::class.java, create = Function { context -> Service(context.get()) })
+            shouldThrow<IllegalArgumentException> { builder.bind(EnglishGreeter::class.java, Greeter::class.java) }
+            shouldThrow<IllegalArgumentException> { builder.bind(Service::class.java, Greeter::class.java) }
+        }
+        val started = container { modules(declared) }
+
+        started.get<Greeter>() shouldBeSameInstanceAs second
+        started.get<Greeter>(FIRST) shouldBeSameInstanceAs first
+        started.close()
+    }
+
+    test("an instance of another class than its definition fails the resolution") {
+        @Suppress("UNCHECKED_CAST")
+        val raw = Function<DefinitionContext, Any> { "not a greeter" } as Function<DefinitionContext, Greeter>
+        val declared = JavaModules.module("raw") { builder -> builder.factory(Greeter::class.java, create = raw) }
+        val started = container { modules(declared) }
+
+        val failure = shouldThrow<ResolutionException> { started.get<Greeter>() }.failure
+        failure
+            .shouldBeInstanceOf<ResolutionFailure.Failed>()
+            .cause
+            .shouldBeInstanceOf<ClassCastException>()
+        started.close()
     }
 })

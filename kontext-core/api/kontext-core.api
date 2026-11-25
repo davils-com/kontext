@@ -584,6 +584,9 @@ public abstract interface annotation class com/davils/kontext/core/holder/Global
 
 public final class com/davils/kontext/core/java/JavaModuleBuilder {
 	public final fun bind (Ljava/lang/Class;Ljava/lang/Class;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun bind (Ljava/lang/Class;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun bind (Ljava/lang/Class;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Lcom/davils/kontext/core/Qualifier;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public static synthetic fun bind$default (Lcom/davils/kontext/core/java/JavaModuleBuilder;Ljava/lang/Class;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Lcom/davils/kontext/core/Qualifier;ILjava/lang/Object;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
 	public final fun factory (Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
 	public final fun factory (Ljava/lang/Class;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
 	public static synthetic fun factory$default (Lcom/davils/kontext/core/java/JavaModuleBuilder;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;ILjava/lang/Object;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
