@@ -16,7 +16,7 @@
 
 version: 2
 
-# Dependabot reaches only the registries named here. The Davils artifacts (Kreate, Kore, konfetti, kollect) live on
+# Dependabot reaches only the registries named here. The Davils artifacts (Kreate, Kore, konfetti, kollect, Knot) live on
 # repo.davils.com, which is publicly readable and needs no credentials.
 registries:
   davils-releases:

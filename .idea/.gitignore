@@ -1,7 +1,7 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Markdown personal settings
-/markdown.xml
-# Editor-based HTTP Client requests
-/httpRequests/
+# Ignore everything in .idea
+*
+
+# But keep this .gitignore and the copyright profile
+!/.gitignore
+!/copyright/
+!/copyright/**
