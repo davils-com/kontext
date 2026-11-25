@@ -17,9 +17,11 @@
 package com.davils.kontext.environment
 
 import com.davils.knot.environment.environment
+import com.davils.kontext.core.ContainerLimits
 import com.davils.kontext.core.container
 import com.davils.kontext.core.property.PropertyKey
 import com.davils.kore.core.arguments.conversion.Converters
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
@@ -44,6 +46,16 @@ class EnvironmentPropertySourceTest : FunSpec({
         started.property("db.host") shouldBe "primary"
         started.property("feature.dark-mode", Converters.boolean) shouldBe true
         started.close()
+    }
+
+    test("refuses a prefix that is not upper case ending with an underscore or is too long") {
+        val tooLong = "A".repeat(ContainerLimits.MAX_NAME_LENGTH) + "_"
+        val refused = listOf("APP", "app_", "_APP_", "1APP_", "APP-X_", "", tooLong)
+
+        refused.forEach { prefix ->
+            shouldThrow<IllegalArgumentException> { PropertyNaming.prefixed(prefix) }
+        }
+        PropertyNaming.prefixed("APP_2_").nameOf(PropertyKey("db.url")) shouldBe "APP_2_DB_URL"
     }
 
     test("names keys and describes itself without values") {

@@ -22,8 +22,11 @@ import com.davils.kontext.core.property.PropertiesBuilder
 /**
  * Adds [environment] as a property source on top of the sources added before.
  *
+ * Without a prefix, every environment variable of the process can be reached by a property key; prefer
+ * [PropertyNaming.prefixed] with a prefix of the application.
+ *
  * @param environment the environment, such as `Environment.SYSTEM`.
- * @param naming maps a property key to a variable name.
+ * @param naming maps a property key to a variable name, [PropertyNaming.UPPER_SNAKE] by default.
  * @since 1.0.0
  */
 public fun PropertiesBuilder.environment(
