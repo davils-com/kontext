@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.update
  *
  * It is safe to record from every thread.
  *
+ * It keeps every event until it is dropped or cleared with [clear], without a bound, so it is for tests only and
+ * never used in production, where a long-running container would grow it until the memory runs out.
+ *
  * @since 1.0.0
  */
 public class RecordingContainerSink : ContainerSink {

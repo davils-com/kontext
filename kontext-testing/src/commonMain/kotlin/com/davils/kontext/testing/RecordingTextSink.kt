@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.update
  *
  * It is safe to write to from every thread.
  *
+ * It keeps every line until it is dropped, without a bound, so it is for tests only and never used in
+ * production, where a long-running container would grow it until the memory runs out.
+ *
  * @since 1.0.0
  */
 public class RecordingTextSink : TextSink {

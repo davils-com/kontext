@@ -26,6 +26,9 @@ import com.davils.kore.testing.SequentialUuidV7Generator
  * Starts a container for a test in [profile], with ids of scopes that count up from the epoch, so that they are the
  * same in every run.
  *
+ * The ids are predictable by design, so a test container is for tests only and never runs in production, where the
+ * ids of scopes must not be guessable.
+ *
  * ```kotlin
  * val container = testContainer {
  *     modules(service)
