@@ -31,6 +31,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 private const val NAME: String = "ada"
@@ -78,6 +79,29 @@ class ParametersTest : FunSpec({
             shouldThrow<ParameterException> { parameters.component3<String>() }
             shouldThrow<ParameterException> { parameters.component4<String>() }
             shouldThrow<ParameterException> { parameters.component5<String>() }
+        }
+
+        test("without a type never match a type with type arguments") {
+            val numbers = listOf(1, 2)
+            val parameters = parametersOf(numbers)
+
+            shouldThrow<ParameterException> { parameters.get<List<String>>() }.message shouldContain "add(value)"
+            shouldThrow<ParameterException> { parameters.getOrNull<List<String>>() }
+            shouldThrow<ParameterException> { parameters.get<List<String>>(index = 0) }
+            parameters.getOrNull<Map<String, Int>>().shouldBeNull()
+            parameters.get<List<*>>() shouldBe numbers
+            parameters.get<List<*>>(index = 0) shouldBe numbers
+        }
+
+        test("with a type match a type with type arguments only exactly") {
+            val names = listOf(NAME)
+            val parameters = parametersOf { add(names) }
+
+            parameters.get<List<String>>() shouldBe names
+            parameters.get<List<String>>(index = 0) shouldBe names
+            parameters.getOrNull<List<Int>>().shouldBeNull()
+            shouldThrow<ParameterException> { parameters.get<List<Int>>(index = 0) }.message shouldContain
+                "The value at 0 is not of type"
         }
 
         test("are bounded and compare by value") {

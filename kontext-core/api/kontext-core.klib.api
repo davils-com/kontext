@@ -463,12 +463,14 @@ final class com.davils.kontext.core.parameter/Parameters { // com.davils.kontext
         final fun <get-values>(): kotlin.collections/List<com.davils.kontext.core.parameter/Parameter> // com.davils.kontext.core.parameter/Parameters.values.<get-values>|<get-values>(){}[0]
 
     final fun at(kotlin/Int): com.davils.kontext.core.parameter/Parameter // com.davils.kontext.core.parameter/Parameters.at|at(kotlin.Int){}[0]
+    final fun ensureTyped(kotlin/Int, com.davils.kontext.core.parameter/Parameter, kotlin.reflect/KType) // com.davils.kontext.core.parameter/Parameters.ensureTyped|ensureTyped(kotlin.Int;com.davils.kontext.core.parameter.Parameter;kotlin.reflect.KType){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.davils.kontext.core.parameter/Parameters.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.davils.kontext.core.parameter/Parameters.hashCode|hashCode(){}[0]
     final fun nameOf(kotlin.reflect/KClass<*>): kotlin/String // com.davils.kontext.core.parameter/Parameters.nameOf|nameOf(kotlin.reflect.KClass<*>){}[0]
     final fun only(kotlin.reflect/KClass<*>, kotlin.collections/List<com.davils.kontext.core.parameter/Parameter>): kotlin/Any // com.davils.kontext.core.parameter/Parameters.only|only(kotlin.reflect.KClass<*>;kotlin.collections.List<com.davils.kontext.core.parameter.Parameter>){}[0]
     final fun onlyOrNull(kotlin.reflect/KClass<*>, kotlin.collections/List<com.davils.kontext.core.parameter/Parameter>): kotlin/Any? // com.davils.kontext.core.parameter/Parameters.onlyOrNull|onlyOrNull(kotlin.reflect.KClass<*>;kotlin.collections.List<com.davils.kontext.core.parameter.Parameter>){}[0]
     final fun toString(): kotlin/String // com.davils.kontext.core.parameter/Parameters.toString|toString(){}[0]
+    final fun untyped(kotlin.reflect/KType): kotlin/String // com.davils.kontext.core.parameter/Parameters.untyped|untyped(kotlin.reflect.KType){}[0]
     final inline fun <#A1: reified kotlin/Any> component1(): #A1 // com.davils.kontext.core.parameter/Parameters.component1|component1(){0§<kotlin.Any>}[0]
     final inline fun <#A1: reified kotlin/Any> component2(): #A1 // com.davils.kontext.core.parameter/Parameters.component2|component2(){0§<kotlin.Any>}[0]
     final inline fun <#A1: reified kotlin/Any> component3(): #A1 // com.davils.kontext.core.parameter/Parameters.component3|component3(){0§<kotlin.Any>}[0]
@@ -952,6 +954,7 @@ final object com.davils.kontext.core/ContainerLimits { // com.davils.kontext.cor
 
 final fun (com.davils.kontext.core.observe/TextSink).com.davils.kontext.core.observe/asContainerSink(com.davils.kontext.core.observe/TextLevel = ...): com.davils.kontext.core.observe/ContainerSink // com.davils.kontext.core.observe/asContainerSink|asContainerSink@com.davils.kontext.core.observe.TextSink(com.davils.kontext.core.observe.TextLevel){}[0]
 final fun (kotlin.collections/List<com.davils.kontext.core/Module>).com.davils.kontext.core/plus(com.davils.kontext.core/Module): kotlin.collections/List<com.davils.kontext.core/Module> // com.davils.kontext.core/plus|plus@kotlin.collections.List<com.davils.kontext.core.Module>(com.davils.kontext.core.Module){}[0]
+final fun com.davils.kontext.core.parameter/isGeneric(kotlin.reflect/KType): kotlin/Boolean // com.davils.kontext.core.parameter/isGeneric|isGeneric(kotlin.reflect.KType){}[0]
 final fun com.davils.kontext.core.parameter/parametersOf(kotlin/Array<out kotlin/Any>...): com.davils.kontext.core.parameter/Parameters // com.davils.kontext.core.parameter/parametersOf|parametersOf(kotlin.Array<out|kotlin.Any>...){}[0]
 final fun com.davils.kontext.core.parameter/parametersOf(kotlin/Function1<com.davils.kontext.core.parameter/ParametersBuilder, kotlin/Unit>): com.davils.kontext.core.parameter/Parameters // com.davils.kontext.core.parameter/parametersOf|parametersOf(kotlin.Function1<com.davils.kontext.core.parameter.ParametersBuilder,kotlin.Unit>){}[0]
 final fun com.davils.kontext.core/Qualifier(kotlin/String): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier|Qualifier(kotlin.String){}[0]

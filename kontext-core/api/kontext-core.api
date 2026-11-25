@@ -736,12 +736,14 @@ public final class com/davils/kontext/core/parameter/ParameterFactoriesKt {
 }
 
 public final class com/davils/kontext/core/parameter/ParameterKt {
+	public static final fun isGeneric (Lkotlin/reflect/KType;)Z
 	public static final fun matches (Lcom/davils/kontext/core/parameter/Parameter;Lkotlin/reflect/KType;Lkotlin/jvm/functions/Function1;)Z
 }
 
 public final class com/davils/kontext/core/parameter/Parameters {
 	public static final field Companion Lcom/davils/kontext/core/parameter/Parameters$Companion;
 	public final fun at (I)Lcom/davils/kontext/core/parameter/Parameter;
+	public final fun ensureTyped (ILcom/davils/kontext/core/parameter/Parameter;Lkotlin/reflect/KType;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getSize ()I
 	public final fun getValues ()Ljava/util/List;
@@ -751,6 +753,7 @@ public final class com/davils/kontext/core/parameter/Parameters {
 	public final fun only (Lkotlin/reflect/KClass;Ljava/util/List;)Ljava/lang/Object;
 	public final fun onlyOrNull (Lkotlin/reflect/KClass;Ljava/util/List;)Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
+	public final fun untyped (Lkotlin/reflect/KType;)Ljava/lang/String;
 }
 
 public final class com/davils/kontext/core/parameter/Parameters$Companion {

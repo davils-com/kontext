@@ -24,6 +24,9 @@ internal data class Parameter(val value: Any, val type: KType?)
 
 @PublishedApi
 internal inline fun Parameter.matches(requested: KType, isInstance: (Any) -> Boolean): Boolean {
-    val declared = type ?: return isInstance(value)
+    val declared = type ?: return !isGeneric(requested) && isInstance(value)
     return sameType(first = declared, second = requested)
 }
+
+@PublishedApi
+internal fun isGeneric(type: KType): Boolean = type.arguments.any { projection -> projection.type != null }
