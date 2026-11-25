@@ -41,6 +41,9 @@ internal class Registry(val declarations: List<Declaration>, scopeDeclarations: 
     val keys: Set<DefinitionKey> = declarations
         .filter { declaration -> declaration.owner == null }
         .mapTo(LinkedHashSet()) { declaration -> declaration.key }
+    val rootKeys: Set<DefinitionKey> = declarations
+        .filter { declaration -> declaration.owner == null }
+        .flatMapTo(LinkedHashSet()) { declaration -> declaration.keys }
 
     fun match(owner: ScopeKey?, key: DefinitionKey): Match? {
         val address = Address(owner, key)

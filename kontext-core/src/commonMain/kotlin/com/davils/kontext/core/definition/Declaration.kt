@@ -52,7 +52,7 @@ internal class Declaration(
         retention = retention,
     )
 
-    private fun overlaps(other: Declaration): Boolean {
+    fun overlaps(other: Declaration): Boolean {
         val isUnrestricted = profiles.isEmpty() || other.profiles.isEmpty()
         return isUnrestricted || profiles.any { profile -> profile in other.profiles }
     }

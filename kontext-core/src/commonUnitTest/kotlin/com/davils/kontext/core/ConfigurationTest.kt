@@ -19,6 +19,7 @@
 package com.davils.kontext.core
 
 import com.davils.kontext.core.container.ContainerBuilder
+import com.davils.kontext.core.definition.bind
 import com.davils.kontext.core.error.ContainerViolationCodes
 import com.davils.kontext.core.fixture.EnglishGreeter
 import com.davils.kontext.core.fixture.GermanGreeter
@@ -185,6 +186,70 @@ class ConfigurationTest : FunSpec({
                 .single()
                 .code shouldBe ContainerViolationCodes.SHADOWED_DEFINITION
             exception.message shouldContain "the container root"
+        }
+    }
+
+    context("aliases") {
+        test("refuses an alias that collides with a definition of the same place") {
+            violationsOf {
+                modules(greeter, module("alias") { single { GermanGreeter() }.bind<Greeter>() })
+            } shouldContainExactly listOf(ContainerViolationCodes.DUPLICATE_DEFINITION)
+            violationsOf {
+                modules(
+                    module(SCOPES) {
+                        scope(SESSION) {
+                            scoped<Greeter> { EnglishGreeter() }
+                            scoped { GermanGreeter() }.bind<Greeter>()
+                        }
+                    },
+                )
+            } shouldContainExactly listOf(ContainerViolationCodes.DUPLICATE_DEFINITION)
+        }
+
+        test("refuses a replacement whose alias collides with a kept definition") {
+            val german = module("german") { single { GermanGreeter() } }
+
+            violationsOf {
+                modules(greeter, german)
+                replace(module("fake") { single { GermanGreeter() }.bind<Greeter>() })
+            } shouldContainExactly listOf(ContainerViolationCodes.DUPLICATE_DEFINITION)
+        }
+
+        test("refuses a scoped alias that hides a definition of the container") {
+            val exception = shouldThrow<ValidationException> {
+                containerOf(
+                    greeter,
+                    module(SCOPES) { scope(SESSION) { scoped { GermanGreeter() }.bind<Greeter>() } },
+                )
+            }
+
+            exception.report.errors
+                .single()
+                .code shouldBe ContainerViolationCodes.SHADOWED_DEFINITION
+            exception.message shouldContain "the container"
+        }
+
+        test("refuses an alias of a child that hides a definition of its parent") {
+            val parent = containerOf(greeter)
+
+            val exception = shouldThrow<ValidationException> {
+                parent.child { modules(module("evil") { single { GermanGreeter() }.bind<Greeter>() }) }
+            }
+
+            exception.report.errors
+                .single()
+                .code shouldBe ContainerViolationCodes.SHADOWED_DEFINITION
+            parent.get<Greeter>().greet() shouldBe HELLO
+        }
+
+        test("refuses a definition of a child that hides an alias of its parent") {
+            val parent = containerOf(module("alias") { single { EnglishGreeter() }.bind<Greeter>() })
+
+            val exception = shouldThrow<ValidationException> { parent.child { modules(greeter) } }
+
+            exception.report.errors
+                .single()
+                .code shouldBe ContainerViolationCodes.SHADOWED_DEFINITION
         }
     }
 

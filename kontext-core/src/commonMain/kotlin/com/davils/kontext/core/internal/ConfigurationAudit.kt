@@ -60,25 +60,39 @@ private fun definitionFindings(input: AuditInput): List<Finding> {
         val message = "replaces ${replacement.key} ${placeOf(replacement.owner)}, which no module declares"
         Finding(code = ContainerViolationCodes.UNKNOWN_REPLACEMENT, message = message, isReplacement = true)
     }
-    return buildList {
-        addAll(reservations)
+    val audited = input.effective.filterNot { declaration -> profileKey in declaration.keys }
+    val duplicates = buildList {
         addAll(duplicatesOf(declared, isReplacement = false))
         addAll(duplicatesOf(replacing, isReplacement = true))
+        addAll(duplicatesOf(audited, isReplacement = false))
+    }
+    return buildList {
+        addAll(reservations)
+        addAll(duplicates.distinctBy { finding -> finding.message })
         addAll(replacements)
     }
 }
 
 private fun duplicatesOf(declarations: List<Declaration>, isReplacement: Boolean): List<Finding> {
-    val groups = declarations.groupBy { declaration -> Address(declaration.owner, declaration.key) }
-    val conflicting = groups.filterValues(::hasConflict)
+    val bound = declarations.flatMap { declaration ->
+        declaration.keys.map { key -> Address(declaration.owner, key) to declaration }
+    }
+    val groups = bound.groupBy(keySelector = { pair -> pair.first }, valueTransform = { pair -> pair.second })
+    val conflicting = groups.filter { (address, group) -> hasConflict(address.key, group) }
     return conflicting.keys.map { address ->
         val message = "declares ${address.key} ${placeOf(address.owner)} more than once in one profile"
         Finding(code = ContainerViolationCodes.DUPLICATE_DEFINITION, message = message, isReplacement = isReplacement)
     }
 }
 
-private fun hasConflict(group: List<Declaration>): Boolean = group.withIndex().any { (index, declaration) ->
-    group.drop(index + 1).any { other -> declaration.conflictsWith(other) }
+private fun hasConflict(key: DefinitionKey, group: List<Declaration>): Boolean =
+    group.withIndex().any { (index, declaration) ->
+        group.drop(index + 1).any { other -> collides(key = key, first = declaration, second = other) }
+    }
+
+private fun collides(key: DefinitionKey, first: Declaration, second: Declaration): Boolean {
+    val isPrimary = first.key == key || second.key == key
+    return isPrimary && first.overlaps(second)
 }
 
 private fun scopeFindings(scopes: List<ScopeDeclaration>): List<Finding> {
@@ -111,46 +125,54 @@ private fun scopeFindings(scopes: List<ScopeDeclaration>): List<Finding> {
 
 private fun shadowFindings(input: AuditInput, parents: Map<ScopeKey, ScopeKey?>): List<Finding> {
     val effective = input.effective.filter { declaration -> declaration.key != profileKey }
-    val keysByOwner = effective.groupBy(keySelector = { it.owner }, valueTransform = { it.key }).mapValues { entry ->
-        entry.value.toSet()
+    val bound = effective.flatMap { declaration ->
+        declaration.keys.map { key -> Address(declaration.owner, key) }
     }
-    val scoped = effective.mapNotNull { declaration ->
-        hiddenPlace(declaration, parents, keysByOwner)?.let { place -> shadowed(declaration, place) }
-    }
+    val grouped = bound.groupBy(keySelector = { address -> address.owner }, valueTransform = { address -> address.key })
+    val keysByOwner = grouped.mapValues { entry -> entry.value.toSet() }
+    val scoped = effective.mapNotNull { declaration -> scopedShadow(declaration, parents, keysByOwner) }
     val inherited = effective.filter { declaration -> declaration.owner == null }.mapNotNull { declaration ->
-        val place = inheritedFrom(input, declaration.key) ?: childOf(input, declaration.key)
-        place?.let { hidden -> shadowed(declaration, hidden) }
+        inheritedShadow(input, declaration)
     }
     return scoped + inherited
 }
 
-private fun hiddenPlace(
+private fun scopedShadow(
     declaration: Declaration,
     parents: Map<ScopeKey, ScopeKey?>,
     keysByOwner: Map<ScopeKey?, Set<DefinitionKey>>,
-): String? {
+): Finding? {
     val owner = declaration.owner ?: return null
     val enclosing: List<Pair<String, ScopeKey?>> = ancestorsOf(
         owner,
         parents,
     ).map { place -> "the scope $place" to place }
     val places = enclosing + ("the container" to null)
-    return places.firstOrNull { (_, place) -> declaration.key in keysByOwner[place].orEmpty() }?.first
+    return declaration.keys.firstNotNullOfOrNull { key ->
+        val hidden = places.firstOrNull { (_, place) -> key in keysByOwner[place].orEmpty() }
+        hidden?.let { (name, _) -> shadowed(key = key, owner = owner, place = name) }
+    }
 }
 
+private fun inheritedShadow(input: AuditInput, declaration: Declaration): Finding? =
+    declaration.keys.firstNotNullOfOrNull { key ->
+        val place = inheritedFrom(input, key) ?: childOf(input, key)
+        place?.let { hidden -> shadowed(key = key, owner = null, place = hidden) }
+    }
+
 private fun childOf(input: AuditInput, key: DefinitionKey): String? {
-    val declaring = input.children.firstOrNull { runtime -> key in runtime.registry.keys } ?: return null
+    val declaring = input.children.firstOrNull { runtime -> key in runtime.registry.rootKeys } ?: return null
     return "the child container ${declaring.name}"
 }
 
 private fun inheritedFrom(input: AuditInput, key: DefinitionKey): String? {
     val ancestors = generateSequence(input.parent) { runtime -> runtime.parent }
-    val declaring = ancestors.firstOrNull { runtime -> key in runtime.registry.keys } ?: return null
+    val declaring = ancestors.firstOrNull { runtime -> key in runtime.registry.rootKeys } ?: return null
     return "the container ${declaring.name}"
 }
 
-private fun shadowed(declaration: Declaration, place: String): Finding {
-    val message = "declares ${declaration.key} ${placeOf(declaration.owner)}, which hides the one of $place"
+private fun shadowed(key: DefinitionKey, owner: ScopeKey?, place: String): Finding {
+    val message = "declares $key ${placeOf(owner)}, which hides the one of $place"
     return Finding(ContainerViolationCodes.SHADOWED_DEFINITION, message)
 }
 
