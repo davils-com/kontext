@@ -109,4 +109,9 @@ class JavaInteropTest : FunSpec({
             .shouldBeInstanceOf<ClassCastException>()
         started.close()
     }
+
+    test("a class without type arguments is not the same type as a generic one") {
+        JavaResolvers.keyOf(List::class.java) shouldNotBe DefinitionKey.of<List<String>>()
+        DefinitionKey.of<List<String>>() shouldNotBe JavaResolvers.keyOf(List::class.java)
+    }
 })

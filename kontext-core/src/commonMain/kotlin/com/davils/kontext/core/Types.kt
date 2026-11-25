@@ -36,8 +36,10 @@ internal fun typeHash(type: KType): Int {
 
 internal fun typeName(type: KType): String = type.toString()
 
-private fun sameArguments(first: List<KTypeProjection>, second: List<KTypeProjection>): Boolean =
-    first.zip(second).all { (one, other) -> sameProjection(first = one, second = other) }
+private fun sameArguments(first: List<KTypeProjection>, second: List<KTypeProjection>): Boolean {
+    if (first.size != second.size) return false
+    return first.zip(second).all { (one, other) -> sameProjection(first = one, second = other) }
+}
 
 private fun sameProjection(first: KTypeProjection, second: KTypeProjection): Boolean {
     val firstType = first.type
