@@ -214,9 +214,10 @@ sealed interface com.davils.kontext.core/Qualifier { // com.davils.kontext.core/
     }
 
     final object Companion { // com.davils.kontext.core/Qualifier.Companion|null[0]
-        final fun of(kotlin/Enum<*>): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier.Companion.of|of(kotlin.Enum<*>){}[0]
+        final fun enumNamed(kotlin.reflect/KClass<*>, kotlin/String): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier.Companion.enumNamed|enumNamed(kotlin.reflect.KClass<*>;kotlin.String){}[0]
         final fun typed(kotlin.reflect/KType): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier.Companion.typed|typed(kotlin.reflect.KType){}[0]
         final inline fun <#A2: reified kotlin/Any?> of(): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier.Companion.of|of(){0§<kotlin.Any?>}[0]
+        final inline fun <#A2: reified kotlin/Enum<#A2>> of(#A2): com.davils.kontext.core/Qualifier // com.davils.kontext.core/Qualifier.Companion.of|of(0:0){0§<kotlin.Enum<0:0>>}[0]
     }
 }
 

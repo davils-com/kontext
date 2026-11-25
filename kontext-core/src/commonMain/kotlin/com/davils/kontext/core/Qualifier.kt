@@ -16,6 +16,7 @@
 
 package com.davils.kontext.core
 
+import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -66,17 +67,24 @@ public sealed interface Qualifier {
      */
     public companion object {
         /**
-         * Creates the qualifier named after [constant]: its name in lower case with `_` as `-`, such as `db-primary`
-         * for `DB_PRIMARY`.
+         * Creates the qualifier named after [constant] and its enum class [E]: the name of the class, with its package
+         * where the platform knows it, followed by the name of the constant, in lower case with the words of the
+         * class joined by `-` and `_` as `-`, such as `com.example.db-role.read-only` for `DbRole.READ_ONLY` in the
+         * package `com.example`. Constants of the same name in different enum classes give different qualifiers. On
+         * a platform that does not know the package of a class, such as `wasmJs` in some configurations, only the
+         * simple name of the class is used, so that two enum classes of the same simple name are only told apart
+         * where the package is known.
          *
+         * @param E the enum class.
          * @param constant the enum constant.
          * @return the qualifier.
-         * @throws IllegalArgumentException if the name of the constant does not make a valid name.
+         * @throws IllegalArgumentException if the names do not make a valid name, such as one longer than
+         * [ContainerLimits.MAX_NAME_LENGTH] characters or one with characters other than ASCII letters, digits and
+         * `_`.
          * @since 1.0.0
          */
-        public fun of(constant: Enum<*>): Qualifier = Named(
-            constant.name.lowercase().replace(oldChar = '_', newChar = '-'),
-        )
+        public inline fun <reified E : Enum<E>> of(constant: E): Qualifier =
+            enumNamed(owner = E::class, constant = constant.name)
 
         /**
          * Creates the qualifier of the marker type [T].
@@ -89,7 +97,26 @@ public sealed interface Qualifier {
 
         @PublishedApi
         internal fun typed(type: KType): Qualifier = Typed(type)
+
+        @PublishedApi
+        internal fun enumNamed(owner: KClass<*>, constant: String): Qualifier {
+            val className = owner.qualifiedName ?: owner.simpleName.orEmpty()
+            val segments = className.split('.').map(::wordsOf)
+            val name = (segments + constant.lowercase().replace(oldChar = '_', newChar = '-')).joinToString(".")
+            return Named(name)
+        }
     }
+}
+
+private fun wordsOf(segment: String): String {
+    val words = StringBuilder()
+    segment.forEachIndexed { index, char ->
+        val previous = segment.getOrNull(index - 1)
+        val isWordStart = char.isUpperCase() && previous != null && (previous.isLowerCase() || previous.isDigit())
+        if (isWordStart) words.append('-')
+        words.append(char.lowercaseChar())
+    }
+    return words.toString().replace(oldChar = '_', newChar = '-')
 }
 
 /**

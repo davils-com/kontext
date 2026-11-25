@@ -17,15 +17,18 @@
 package com.davils.kontext.core
 
 import com.davils.kontext.core.fixture.Color
+import com.davils.kontext.core.fixture.DbRole
 import com.davils.kontext.core.fixture.EnglishGreeter
 import com.davils.kontext.core.fixture.GermanGreeter
 import com.davils.kontext.core.fixture.Greeter
 import com.davils.kontext.core.fixture.Primary
+import com.davils.kontext.core.fixture.Shade
 import com.davils.kontext.core.fixture.containerOf
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldEndWith
 import kotlin.reflect.typeOf
 
 private const val PRIMARY_NAME: String = "db.primary"
@@ -36,7 +39,15 @@ class QualifierTest : FunSpec({
         Qualifier(PRIMARY_NAME).hashCode() shouldBe Qualifier(PRIMARY_NAME).hashCode()
         Qualifier(PRIMARY_NAME) shouldNotBe Qualifier("db.replica")
         Qualifier(PRIMARY_NAME).equals(PRIMARY_NAME) shouldBe false
-        Qualifier.of(Color.DEEP_RED) shouldBe Qualifier("deep-red")
+    }
+
+    test("enum qualifiers tell constants of the same name in different enum classes apart") {
+        val color = Qualifier.of(Color.DEEP_RED)
+
+        color shouldBe Qualifier.of(Color.DEEP_RED)
+        color shouldNotBe Qualifier.of(Shade.DEEP_RED)
+        color.toString() shouldEndWith "color.deep-red"
+        Qualifier.of(DbRole.READ_ONLY).toString() shouldEndWith "db-role.read-only"
     }
 
     test("typed qualifiers compare by type") {
@@ -54,11 +65,13 @@ class QualifierTest : FunSpec({
             module("app") {
                 single<Greeter>(qualifier<Primary>()) { EnglishGreeter() }
                 single<Greeter>(Qualifier.of(Color.DEEP_RED)) { GermanGreeter() }
+                single<Greeter>(Qualifier.of(Shade.DEEP_RED)) { EnglishGreeter() }
             },
         )
 
         container.get<Greeter>(qualifier<Primary>()).greet() shouldBe "hello"
-        container.get<Greeter>(Qualifier("deep-red")).greet() shouldBe "hallo"
+        container.get<Greeter>(Qualifier.of(Color.DEEP_RED)).greet() shouldBe "hallo"
+        container.get<Greeter>(Qualifier.of(Shade.DEEP_RED)).greet() shouldBe "hello"
     }
 
     test("keys compare types structurally") {
