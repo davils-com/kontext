@@ -1,9 +1,9 @@
 # Kontext
 
 Kontext is the dependency injection of Davils applications for Kotlin on the JVM and on WebAssembly (`wasmJs`). It
-covers what Koin offers, without reflection, code generation, an annotation processor or a global container by
-default, and fixes the weaknesses Koin is known for: errors only at runtime, silent overrides, erased generics,
-untyped parameters, stack overflows on cycles, leaking scopes, and no suspending creation. It writes no file and no log
+works without reflection, code generation, an annotation processor or a global container by default, and leaves out
+the usual weaknesses of dependency injection: errors only at runtime, silent overrides, erased generics, untyped
+parameters, stack overflows on cycles, leaking scopes, and no suspending creation. It writes no file and no log
 of its own, reports through sinks, [kollect](https://github.com/davils-com/kollect) and
 [konfetti](https://github.com/davils-com/konfetti), is built on [Kore](https://github.com/davils-com/kore) and is
 published under the [Apache License 2.0](LICENSE).
@@ -116,7 +116,7 @@ holds at most `scopeLimit` open scopes, so a leak fails loudly, and closes every
 
 `container.load(modules)` validates modules together with what the container holds and loads them atomically;
 `handle.unload()` removes them, closes their scopes and instances and reports failures. `container.declare(instance)`
-declares a single at runtime. A `ContainerHolder` replaces `startKoin`, `stopKoin` and `loadKoinModules`; the
+declares a single at runtime. A `ContainerHolder` starts, stops and reloads the container of an application; the
 process-wide `GlobalContainer` and `GlobalComponent` exist for migrations behind `@GlobalContainerApi`.
 
 ## Components
@@ -163,25 +163,6 @@ Container container = JavaModules.start(Profile.Companion.getDEFAULT(), builder 
 Service service = JavaResolvers.get(container, Service.class);
 JavaModules.close(container);
 ```
-
-## Migrating from Koin
-
-| Koin | Kontext |
-|---|---|
-| `startKoin { modules(...) }` | `holder.start { modules(...) }` or `container { modules(...) }` |
-| `koinApplication { }`, `KoinConfiguration` | `container { }`, `containerSetup { }` |
-| `loadKoinModules`, `unloadKoinModules` | `container.load(...)`, `handle.unload()` |
-| `single`, `factory`, `scoped`, `singleOf(::X)` | the same, plus `singleAsync`, `factoryAsync`, `scopedAsync` |
-| `named("x")`, `named<T>()` | `Qualifier("x")`, `qualifier<T>()` |
-| `parametersOf(...)`, `{ (a: A) -> }` | `parametersOf(...)`, `parameters.get<A>()` |
-| `createdAtStart()`, `onClose { }` | `eager = true`, `close = { }` |
-| `override()`, `allowOverride` | `replace(module)` |
-| `getKoin().createScope(id, named("s"))` | `container.openScope(ScopeKey("s"), ScopeId(id))` |
-| `KoinComponent`, `by inject()` | `ContainerComponent`, `by inject()` |
-| `getProperty("x")` | `property("x", Converters.int)` |
-| `Logger` | `TextSink` |
-| `KoinExtension`, `ResolutionExtension` | `ContainerExtension`, `ResolutionFallback` |
-| `checkModules`, `verify()` | `verifyStatically { }`, `verify { }` |
 
 ## Benchmarks
 

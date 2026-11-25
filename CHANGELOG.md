@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The first version of Kontext: the dependency injection of kide as an open source library under the Apache License
 2.0, for Kotlin on the JVM and on `wasmJs`, built with Kreate 5.4.1 on Kore 2.3.2, kollect 1.0.0, konfetti 1.0.0 and
-Knot 1.0.0 and published to `https://repo.davils.com`. It offers what `kide-common-di` offers without Koin or any
-other engine and without anything of kide.
+Knot 1.0.0 and published to `https://repo.davils.com`. It offers what `kide-common-di` offers without a
+third-party engine and without anything of kide.
 
 ### Added
 

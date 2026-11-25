@@ -27,7 +27,7 @@ Kontext uses Kore wherever Kore has the building block: `ValidatingBuilder` and 
 codes, `SafeText`, `immutableList()`, `contained { }` and the `Davils*` annotations. Never write a second version of
 something Kore has.
 
-Kontext offers what the dependency injection of kide (`kide-common-di`) offers, without Koin or any other engine and
+Kontext offers what the dependency injection of kide (`kide-common-di`) offers, without a third-party engine and
 without anything of kide: the live and mock data modes of kide are the generic `Profile`s here, the logger of kide is
 the `ContainerSink`, and the shutdown binding lives in `kontext-shutdown`. Kontext never writes a file, a log or a
 standard stream; everything it reports goes to a sink, a meter registry, a tracer or an event bus of the caller.
