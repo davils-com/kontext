@@ -21,7 +21,7 @@ plugins {
 kreate {
     project {
         description = "Dependency injection for Davils applications: modules, profiles, scopes, child containers, " +
-            "verification and telemetry, without reflection and without a global container."
+            "verification and telemetry, without reflection and without a global container by default."
     }
 }
 
