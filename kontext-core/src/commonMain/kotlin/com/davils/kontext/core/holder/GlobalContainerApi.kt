@@ -21,13 +21,14 @@ package com.davils.kontext.core.holder
  *
  * A global container is shared state: tests that use it must stop it, and code that reaches for it hides its
  * dependencies. It exists to migrate code written for a global context; new code holds a [ContainerHolder] or a
- * container itself.
+ * container itself. Using it without `@OptIn(GlobalContainerApi::class)` is a compile error in Kotlin; Java callers
+ * are not checked, because the Java compiler ignores opt-in requirements.
  *
  * @since 1.0.0
  */
 @RequiresOptIn(
     message = "The global container is process-wide state; prefer a ContainerHolder the application owns.",
-    level = RequiresOptIn.Level.WARNING,
+    level = RequiresOptIn.Level.ERROR,
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
