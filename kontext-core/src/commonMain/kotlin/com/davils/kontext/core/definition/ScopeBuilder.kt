@@ -106,7 +106,7 @@ public class ScopeBuilder internal constructor(
     public inline fun <reified T : Any> provided(qualifier: Qualifier? = null): Definition<T> =
         declareProvided(DefinitionKey(typeOf<T>(), qualifier))
 
-    internal fun declaration(): ScopeDeclaration = ScopeDeclaration(key, within)
+    internal fun declaration(): ScopeDeclaration = ScopeDeclaration(key = key, within = within, profiles = profiles)
 
     override fun toString(): String = "ScopeBuilder($key, within=${within ?: NONE})"
 }

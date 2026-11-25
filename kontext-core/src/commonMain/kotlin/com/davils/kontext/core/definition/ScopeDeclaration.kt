@@ -16,6 +16,11 @@
 
 package com.davils.kontext.core.definition
 
+import com.davils.kontext.core.Profile
 import com.davils.kontext.core.ScopeKey
 
-internal data class ScopeDeclaration(val key: ScopeKey, val within: ScopeKey?)
+internal data class ScopeDeclaration(
+    val key: ScopeKey,
+    val within: ScopeKey?,
+    val profiles: Set<Profile> = emptySet(),
+)

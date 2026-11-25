@@ -113,6 +113,31 @@ class ConfigurationTest : FunSpec({
         }
     }
 
+    context(VARIANTS) {
+        test("refuses an include within a variant") {
+            val exception = shouldThrow<IllegalStateException> {
+                module("app") { variant(MOCK) { include(greeter) } }
+            }
+
+            exception.message shouldContain "within a variant"
+        }
+
+        test("declares a scope of a variant only in the profiles of the variant") {
+            val variants = module(VARIANTS) {
+                scope(SESSION) {}
+                variant(LIVE) { scope(REQUEST) { factory { REQUESTED } } }
+                variant(MOCK) { scope(REQUEST, within = SESSION) { factory { REQUESTED } } }
+            }
+
+            val live = containerOf(variants, profile = LIVE)
+            val other = containerOf(variants)
+
+            live.scopes shouldBe setOf(SESSION, REQUEST)
+            live.openScope(REQUEST).get<String>() shouldBe REQUESTED
+            other.scopes shouldBe setOf(SESSION)
+        }
+    }
+
     context(SCOPES) {
         test("refuses a scope declared within different scopes") {
             violationsOf {

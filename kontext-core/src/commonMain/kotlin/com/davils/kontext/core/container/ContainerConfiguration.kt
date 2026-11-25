@@ -185,8 +185,10 @@ public class ContainerConfiguration internal constructor(builder: ContainerBuild
 
     internal fun replacing(): List<Declaration> = replacements.flatMap { module -> module.declarations }
 
-    internal fun scopeDeclarations(): List<ScopeDeclaration> =
-        (modules + replacements).flatMap { module -> module.scopes }
+    internal fun scopeDeclarations(): List<ScopeDeclaration> {
+        val declared = (modules + replacements).flatMap { module -> module.scopes }
+        return declared.filter { scope -> scope.profiles.isEmpty() || profile in scope.profiles }
+    }
 
     internal fun declarations(): List<Declaration> {
         val replacing = replacing()

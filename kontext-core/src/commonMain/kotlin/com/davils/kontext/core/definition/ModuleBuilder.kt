@@ -107,6 +107,9 @@ public class ModuleBuilder internal constructor(public val name: ModuleName, pub
      * Declares the scope [key] and its definitions. Several modules may declare definitions of the same scope, as
      * long as they agree on [within].
      *
+     * Within a [variant], the scope and its definitions exist only in the profiles of the variant: a container in any
+     * other profile does not know the scope, unless another declaration outside a variant declares it as well.
+     *
      * @param key the key of the scope.
      * @param within the key of the scope it is opened in, `null` for one opened on the container.
      * @param block declares the definitions of the scope.
@@ -122,8 +125,8 @@ public class ModuleBuilder internal constructor(public val name: ModuleName, pub
      * Declares the definitions of [block] for [profile] only, see the overload for several profiles.
      *
      * @param profile the profile the definitions exist in.
-     * @param block declares the definitions, including scopes.
-     * @throws IllegalStateException if called within another variant.
+     * @param block declares the definitions, including scopes, but no included module.
+     * @throws IllegalStateException if called within another variant, or if [block] includes a module.
      * @since 1.0.0
      */
     public fun variant(profile: Profile, block: ModuleBuilder.() -> Unit) {
@@ -135,9 +138,9 @@ public class ModuleBuilder internal constructor(public val name: ModuleName, pub
      * them, so that, for example, a live and a mock implementation share one key.
      *
      * @param profiles the profiles the definitions exist in.
-     * @param block declares the definitions, including scopes.
+     * @param block declares the definitions, including scopes, but no included module.
      * @throws IllegalArgumentException if no profile is named.
-     * @throws IllegalStateException if called within another variant.
+     * @throws IllegalStateException if called within another variant, or if [block] includes a module.
      * @since 1.0.0
      */
     public fun variant(profiles: Set<Profile>, block: ModuleBuilder.() -> Unit) {
@@ -152,12 +155,21 @@ public class ModuleBuilder internal constructor(public val name: ModuleName, pub
     }
 
     /**
-     * Includes [modules]: a container that holds this module holds them as well, each once.
+     * Includes [modules]: a container that holds this module holds them as well, each once, with the definitions of
+     * all their profiles.
+     *
+     * An include is refused within a [variant], because an included module is shared by identity and would otherwise
+     * install its definitions in every profile, such as a fake module of a test profile in production. Declare the
+     * variant inside the included module, or include the module only in the module set of the profile instead.
      *
      * @param modules the modules to include.
+     * @throws IllegalStateException if called within a variant.
      * @since 1.0.0
      */
     public fun include(vararg modules: Module) {
+        check(variantProfiles.isEmpty()) {
+            "A module cannot be included within a variant, because it would hold its definitions in every profile"
+        }
         includes += modules
     }
 
