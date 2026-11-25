@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
+@file:OptIn(DavilsInternal::class)
+
 package com.davils.kontext.core
 
 import com.davils.kontext.core.container.CloseReport
 import com.davils.kontext.core.internal.ContainerRuntime
 import com.davils.kontext.core.internal.Installation
+import com.davils.kore.core.annotation.DavilsInternal
+import com.davils.kore.core.collection.immutableList
 
 /**
  * Modules loaded into a running container by [Container.load] or [Container.declare], to unload them again.
@@ -34,7 +38,7 @@ public class ModuleHandle internal constructor(
      *
      * @since 1.0.0
      */
-    public val modules: List<Module> get() = installation.modules
+    public val modules: List<Module> = installation.modules.immutableList()
 
     /**
      * Removes the definitions of the modules from the container, closes the scopes only they declared and closes
