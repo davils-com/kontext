@@ -177,6 +177,15 @@ sealed interface com.davils.kontext.core.verify/VerificationReason { // com.davi
         final fun toString(): kotlin/String // com.davils.kontext.core.verify/VerificationReason.Undisposable.toString|toString(){}[0]
     }
 
+    final class Unopenable : com.davils.kontext.core.verify/VerificationReason { // com.davils.kontext.core.verify/VerificationReason.Unopenable|null[0]
+        final val cause // com.davils.kontext.core.verify/VerificationReason.Unopenable.cause|{}cause[0]
+            final fun <get-cause>(): kotlin/IllegalStateException // com.davils.kontext.core.verify/VerificationReason.Unopenable.cause.<get-cause>|<get-cause>(){}[0]
+        final val scope // com.davils.kontext.core.verify/VerificationReason.Unopenable.scope|{}scope[0]
+            final fun <get-scope>(): com.davils.kontext.core/ScopeKey // com.davils.kontext.core.verify/VerificationReason.Unopenable.scope.<get-scope>|<get-scope>(){}[0]
+
+        final fun toString(): kotlin/String // com.davils.kontext.core.verify/VerificationReason.Unopenable.toString|toString(){}[0]
+    }
+
     final class Unresolvable : com.davils.kontext.core.verify/VerificationReason { // com.davils.kontext.core.verify/VerificationReason.Unresolvable|null[0]
         final val failure // com.davils.kontext.core.verify/VerificationReason.Unresolvable.failure|{}failure[0]
             final fun <get-failure>(): com.davils.kontext.core.error/ResolutionFailure // com.davils.kontext.core.verify/VerificationReason.Unresolvable.failure.<get-failure>|<get-failure>(){}[0]

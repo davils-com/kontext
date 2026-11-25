@@ -17,12 +17,15 @@
 package com.davils.kontext.core
 
 import com.davils.kontext.core.error.ResolutionFailure
+import com.davils.kontext.core.error.ScopeLimitException
 import com.davils.kontext.core.fixture.BROKEN
 import com.davils.kontext.core.fixture.EnglishGreeter
 import com.davils.kontext.core.fixture.Greeter
 import com.davils.kontext.core.fixture.Handler
 import com.davils.kontext.core.fixture.LIVE
 import com.davils.kontext.core.fixture.MOCK
+import com.davils.kontext.core.fixture.Opening
+import com.davils.kontext.core.fixture.PAGE
 import com.davils.kontext.core.fixture.REQUEST
 import com.davils.kontext.core.fixture.Request
 import com.davils.kontext.core.fixture.SESSION
@@ -114,6 +117,58 @@ class VerificationTest : FunSpec({
             .shouldBeInstanceOf<VerificationReason.Undisposable>()
         reason.failure.cause.message shouldBe UNCLOSABLE
         reason.toString() shouldStartWith "Undisposable(DisposalFailure("
+    }
+
+    test("closes every scope it opens, so that the scope limit holds for one chain at a time") {
+        val app = module("app") {
+            scope(SESSION) { factory { "session" } }
+            scope(PAGE) { factory { "page" } }
+            scope(REQUEST) { scoped(close = { _: Greeter -> error(UNCLOSABLE) }) { EnglishGreeter() } }
+        }
+
+        val failed = verify {
+            scopeLimit = 1
+            modules(app)
+        }.shouldBeInstanceOf<Verification.Failed>()
+
+        failed.problems
+            .single()
+            .reason
+            .shouldBeInstanceOf<VerificationReason.Undisposable>()
+    }
+
+    test("reports a scope nested deeper than the scope limit") {
+        val app = module("app") {
+            scope(SESSION) {}
+            scope(REQUEST, within = SESSION) { factory { "request" } }
+        }
+
+        val failed = verify {
+            scopeLimit = 1
+            modules(app)
+        }.shouldBeInstanceOf<Verification.Failed>()
+
+        val reason = failed.problems
+            .single()
+            .reason
+            .shouldBeInstanceOf<VerificationReason.Unopenable>()
+        reason.scope shouldBe REQUEST
+        reason.cause.shouldBeInstanceOf<ScopeLimitException>()
+        reason.toString() shouldBe "Unopenable(request, The container already holds 1 open scopes)"
+    }
+
+    test("reports an outermost scope that the scope limit refuses") {
+        val failed = verify {
+            scopeLimit = 1
+            modules(module("app") { scope(SESSION) {} })
+            extensions(Opening(SESSION))
+        }.shouldBeInstanceOf<Verification.Failed>()
+
+        failed.problems
+            .single()
+            .reason
+            .shouldBeInstanceOf<VerificationReason.Unopenable>()
+            .scope shouldBe SESSION
     }
 
     test("needs a profile") {

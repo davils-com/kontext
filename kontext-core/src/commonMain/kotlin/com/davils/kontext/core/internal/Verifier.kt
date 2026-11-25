@@ -22,9 +22,12 @@ import com.davils.kontext.core.ScopeKey
 import com.davils.kontext.core.container.ContainerBuilder
 import com.davils.kontext.core.error.ResolutionException
 import com.davils.kontext.core.error.ResolutionFailure
+import com.davils.kontext.core.error.ScopeLimitException
 import com.davils.kontext.core.verify.Verification
 import com.davils.kontext.core.verify.VerificationProblem
 import com.davils.kontext.core.verify.VerificationReason
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 
 internal class Verifier(private val profile: Profile, private val block: ContainerBuilder.() -> Unit) {
     var resolved: Int = 0
@@ -46,20 +49,54 @@ internal class Verifier(private val profile: Profile, private val block: Contain
         } catch (refusal: ResolutionException) {
             return listOf(VerificationReason.Unresolvable(refusal.failure))
         }
-        val unresolved = resolvedIn(runtime)
-        return unresolved + runtime.close().failures.map(VerificationReason::Undisposable)
+        val reasons = mutableListOf<VerificationReason>()
+        try {
+            reasons += resolvedIn(runtime)
+        } finally {
+            val closed = withContext(NonCancellable) { runtime.close() }
+            reasons += closed.failures.map(VerificationReason::Undisposable)
+        }
+        return reasons
     }
 
     private suspend fun resolvedIn(runtime: ContainerRuntime): List<VerificationReason> {
         runtime.awaitLoaded()
         val registry = runtime.registry
         val root = registry.of(null).mapNotNull { declaration -> attempt(runtime.context, declaration.key) }
-        val scoped = registry.scopes.flatMap { key ->
-            val opened = openChain(runtime, key)
-            registry.of(key).mapNotNull { declaration -> attempt(opened.context, declaration.key) }
+        val scoped = registry.scopes.flatMap { key -> scopeReasons(runtime, key) }
+        return unresolvable(root) + scoped
+    }
+
+    private suspend fun scopeReasons(runtime: ContainerRuntime, key: ScopeKey): List<VerificationReason> {
+        val chain = generateSequence(key) { place -> runtime.registry.parents[place] }
+        val keys = chain.toList().asReversed()
+        val outermost = try {
+            runtime.scopes.open(key = keys.first(), parent = null, seeds = emptyMap(), scopeId = null)
+        } catch (refusal: ScopeLimitException) {
+            return listOf(VerificationReason.Unopenable(scope = key, cause = refusal))
         }
-        val reported = (root + scoped).filterNot { failure -> failure is ResolutionFailure.Unprovided }
-        return reported.map(VerificationReason::Unresolvable)
+        val reasons = mutableListOf<VerificationReason>()
+        try {
+            reasons += chainReasons(runtime = runtime, outermost = outermost, nested = keys.drop(1))
+        } finally {
+            val closed = withContext(NonCancellable) { outermost.close() }
+            reasons += closed.failures.map(VerificationReason::Undisposable)
+        }
+        return reasons
+    }
+
+    private suspend fun chainReasons(
+        runtime: ContainerRuntime,
+        outermost: ScopeRuntime,
+        nested: List<ScopeKey>,
+    ): List<VerificationReason> {
+        val innermost = try {
+            nested.fold(outermost) { parent, place -> parent.openScope(place, null, emptyMap()) }
+        } catch (refusal: ScopeLimitException) {
+            return listOf(VerificationReason.Unopenable(scope = nested.last(), cause = refusal))
+        }
+        val declarations = runtime.registry.of(innermost.key)
+        return unresolvable(declarations.mapNotNull { declaration -> attempt(innermost.context, declaration.key) })
     }
 
     private suspend fun attempt(resolver: ResolutionContext, key: DefinitionKey): ResolutionFailure? = try {
@@ -69,13 +106,11 @@ internal class Verifier(private val profile: Profile, private val block: Contain
     } catch (refusal: ResolutionException) {
         refusal.failure
     }
+}
 
-    private fun openChain(runtime: ContainerRuntime, key: ScopeKey): ScopeRuntime {
-        val chain = generateSequence(key) { place -> runtime.registry.parents[place] }
-        val keys = chain.toList().asReversed()
-        val outermost = runtime.scopes.open(key = keys.first(), parent = null, seeds = emptyMap(), scopeId = null)
-        return keys.drop(1).fold(outermost) { parent, place -> parent.openScope(place, null, emptyMap()) }
-    }
+private fun unresolvable(failures: List<ResolutionFailure>): List<VerificationReason> {
+    val reported = failures.filterNot { failure -> failure is ResolutionFailure.Unprovided }
+    return reported.map(VerificationReason::Unresolvable)
 }
 
 internal suspend fun verified(profiles: Set<Profile>, block: ContainerBuilder.() -> Unit): Verification {

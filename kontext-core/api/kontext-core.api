@@ -838,6 +838,12 @@ public final class com/davils/kontext/core/verify/VerificationReason$Undisposabl
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/davils/kontext/core/verify/VerificationReason$Unopenable : com/davils/kontext/core/verify/VerificationReason {
+	public final fun getCause ()Ljava/lang/IllegalStateException;
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/davils/kontext/core/verify/VerificationReason$Unresolvable : com/davils/kontext/core/verify/VerificationReason {
 	public final fun getFailure ()Lcom/davils/kontext/core/error/ResolutionFailure;
 	public fun toString ()Ljava/lang/String;

@@ -16,6 +16,7 @@
 
 package com.davils.kontext.core.verify
 
+import com.davils.kontext.core.ScopeKey
 import com.davils.kontext.core.container.DisposalFailure
 import com.davils.kontext.core.error.ResolutionFailure
 import com.davils.kore.core.validation.report.ValidationReport
@@ -54,5 +55,18 @@ public sealed interface VerificationReason {
      */
     public class Undisposable internal constructor(public val failure: DisposalFailure) : VerificationReason {
         override fun toString(): String = "Undisposable($failure)"
+    }
+
+    /**
+     * A scope cannot be opened to verify its definitions, such as when the scope limit of the container is lower
+     * than the depth of the nesting of the scope.
+     *
+     * @property scope the key of the scope.
+     * @property cause why it cannot be opened.
+     * @since 1.0.0
+     */
+    public class Unopenable internal constructor(public val scope: ScopeKey, public val cause: IllegalStateException) :
+        VerificationReason {
+        override fun toString(): String = "Unopenable($scope, ${cause.message.orEmpty()})"
     }
 }
