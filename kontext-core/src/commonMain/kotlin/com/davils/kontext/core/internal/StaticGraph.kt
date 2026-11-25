@@ -37,25 +37,34 @@ internal class StaticGraph(private val registry: Registry) {
 
     fun cycles(): List<ResolutionFailure> {
         val explored = HashSet<Declaration>()
-        return edges.keys.mapNotNull { start -> cycleFrom(current = start, path = emptyList(), explored = explored) }
+        return edges.keys.mapNotNull { start -> freshCycleFrom(start = start, explored = explored) }
     }
 
-    private fun cycleFrom(
-        current: Declaration,
-        path: List<Declaration>,
-        explored: MutableSet<Declaration>,
-    ): ResolutionFailure? {
-        if (current in path) return ResolutionFailure.Circular(current.key, path.map { step -> step.key })
-        val isFresh = explored.add(current)
-        val known = edges.getValue(current)
-        val next = known.takeIf { isFresh }.orEmpty()
-        return next.firstNotNullOfOrNull { step ->
-            cycleFrom(
-                current = step,
-                path = path + current,
-                explored = explored,
-            )
+    private fun freshCycleFrom(start: Declaration, explored: MutableSet<Declaration>): ResolutionFailure? {
+        if (!explored.add(start)) return null
+        return cycleFrom(start = start, explored = explored)
+    }
+
+    private fun cycleFrom(start: Declaration, explored: MutableSet<Declaration>): ResolutionFailure? {
+        val path = ArrayDeque(listOf(start))
+        val onPath = hashSetOf(start)
+        val cursors = ArrayDeque(listOf(edges.getValue(start).iterator()))
+        while (cursors.isNotEmpty()) {
+            val cursor = cursors.last()
+            if (!cursor.hasNext()) {
+                cursors.removeLast()
+                onPath -= path.removeLast()
+                continue
+            }
+            val step = cursor.next()
+            if (step in onPath) return ResolutionFailure.Circular(step.key, path.map { visited -> visited.key })
+            if (explored.add(step)) {
+                path.addLast(step)
+                onPath += step
+                cursors.addLast(edges.getValue(step).iterator())
+            }
         }
+        return null
     }
 
     private fun find(owner: ScopeKey?, key: DefinitionKey): Match? {

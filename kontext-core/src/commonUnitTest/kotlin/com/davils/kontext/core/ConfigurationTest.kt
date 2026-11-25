@@ -38,6 +38,7 @@ import com.davils.kore.core.validation.violation.ViolationCode
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
@@ -51,6 +52,7 @@ private val greeter: Module = module("greeter") { single<Greeter> { EnglishGreet
 private const val VARIANTS: String = "variants"
 private const val SCOPES: String = "scopes"
 private const val REQUESTED: String = "request"
+private const val INCLUDES: Int = 50_000
 
 class ConfigurationTest : FunSpec({
     context("definitions") {
@@ -110,6 +112,18 @@ class ConfigurationTest : FunSpec({
             val container = containerOf(included, greeter)
 
             container.get<Greeter>().greet() shouldBe HELLO
+        }
+
+        test("includes a long chain of modules without overflowing the stack") {
+            val innermost = module("m0") { single<Greeter> { EnglishGreeter() } }
+            val outermost = (1..INCLUDES).fold(innermost) { included, index ->
+                module("m$index") { include(included, innermost) }
+            }
+
+            val container = containerOf(outermost)
+
+            container.get<Greeter>().greet() shouldBe HELLO
+            flatten(listOf(outermost, innermost)) shouldHaveSize INCLUDES + 1
         }
     }
 

@@ -55,12 +55,6 @@ public class Module internal constructor(
     public operator fun plus(other: Module): List<Module> = listOf(this, other)
 
     override fun toString(): String = "Module($name)"
-
-    internal fun collectInto(collected: MutableList<Module>) {
-        if (collected.any { module -> module === this }) return
-        collected += this
-        includes.forEach { module -> module.collectInto(collected) }
-    }
 }
 
 /**
@@ -74,6 +68,14 @@ public operator fun List<Module>.plus(other: Module): List<Module> = this + list
 
 internal fun flatten(roots: List<Module>): List<Module> {
     val collected = mutableListOf<Module>()
-    roots.forEach { root -> root.collectInto(collected) }
+    val seen = HashSet<Module>()
+    val pending = ArrayDeque(roots.asReversed())
+    while (pending.isNotEmpty()) {
+        val module = pending.removeLast()
+        if (seen.add(module)) {
+            collected += module
+            pending.addAll(module.includes.asReversed())
+        }
+    }
     return collected
 }
