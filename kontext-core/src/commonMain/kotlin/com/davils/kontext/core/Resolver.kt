@@ -96,7 +96,9 @@ public abstract class Resolver internal constructor() {
 
     /**
      * Resolves the instance of [T] with [qualifier], suspending while a suspending definition creates it or lazy
-     * modules load.
+     * modules load. A cycle of suspending singles is reported as circular within one resolution; two coroutines
+     * entering the same cycle from different ends wait for each other, so such a cycle must not exist, which
+     * `verifyStatically` checks for constructor definitions.
      *
      * @param T the type of the definition.
      * @param qualifier the qualifier of the definition, `null` for none.

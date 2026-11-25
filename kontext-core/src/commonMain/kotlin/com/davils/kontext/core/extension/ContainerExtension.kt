@@ -65,7 +65,9 @@ public interface ContainerExtension {
     public fun onModulesUnloaded(container: Container, modules: List<Module>): Unit = Unit
 
     /**
-     * Called when the container starts to close, before its children, scopes and instances close.
+     * Called when the container starts to close, before its children, scopes and instances close. Closing waits for
+     * it without a time limit, so a hook that never returns keeps the container from closing; bound slow work with
+     * a timeout of its own.
      *
      * @param container the container.
      * @since 1.0.0
