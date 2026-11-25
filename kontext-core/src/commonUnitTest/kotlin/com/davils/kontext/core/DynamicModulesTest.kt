@@ -24,6 +24,7 @@ import com.davils.kontext.core.fixture.EnglishGreeter
 import com.davils.kontext.core.fixture.GermanGreeter
 import com.davils.kontext.core.fixture.Greeter
 import com.davils.kontext.core.fixture.Journal
+import com.davils.kontext.core.fixture.MOCK
 import com.davils.kontext.core.fixture.Resource
 import com.davils.kontext.core.fixture.SESSION
 import com.davils.kontext.core.fixture.containerOf
@@ -65,6 +66,15 @@ class DynamicModulesTest : FunSpec({
         val loadedEvent = sink.of<ContainerEvent.ModulesLoaded>().single()
         loadedEvent.toString() shouldBe "ModulesLoaded(root, [loaded])"
         sink.of<ContainerEvent.ModulesUnloaded>().single().modules shouldBe listOf(ModuleName("loaded"))
+    }
+
+    test("a loaded module declares the scopes of a variant only in its profile") {
+        val container = containerOf(module("app") {})
+
+        container.load(module("late") { variant(MOCK) { scope(SESSION) {} } })
+
+        container.scopes shouldBe emptySet()
+        container.close()
     }
 
     test("refuses a load that conflicts with the container and loads nothing") {

@@ -23,6 +23,7 @@ import com.davils.kontext.core.container.CloseReport
 import com.davils.kontext.core.container.DisposalFailure
 import com.davils.kontext.core.definition.Declaration
 import com.davils.kontext.core.definition.Lifetime
+import com.davils.kontext.core.definition.ScopeDeclaration
 import com.davils.kontext.core.flatten
 import com.davils.kore.core.failure.attempted
 import kotlinx.coroutines.NonCancellable
@@ -89,7 +90,7 @@ internal class ModuleLoader(private val runtime: ContainerRuntime, private val i
             modules = fresh,
             replacements = emptyList(),
             declarations = declared,
-            scopes = fresh.flatMap { module -> module.scopes },
+            scopes = scopesOf(fresh),
         )
         val input = AuditInput(
             modules = known + fresh,
@@ -105,6 +106,11 @@ internal class ModuleLoader(private val runtime: ContainerRuntime, private val i
         installations += installation
         registryRef.store(registryOf(installations))
         return installation
+    }
+
+    private fun scopesOf(modules: List<Module>): List<ScopeDeclaration> {
+        val declared = modules.flatMap { module -> module.scopes }
+        return declared.filter { scope -> scope.profiles.isEmpty() || runtime.profile in scope.profiles }
     }
 
     private suspend fun released(installation: Installation): List<DisposalFailure> {
