@@ -1,0 +1,842 @@
+public final class com/davils/kontext/core/Container : com/davils/kontext/core/Resolver, com/davils/kollect/core/health/HealthIndicator {
+	public final fun awaitReady (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun check (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun child-DgakQ2Q (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun child-DgakQ2Q$default (Lcom/davils/kontext/core/Container;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun declareModule (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun detached ()Lcom/davils/kontext/core/Resolver;
+	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getDefinitions ()Ljava/util/Set;
+	public final fun getEvents ()Lkotlinx/coroutines/flow/SharedFlow;
+	public final fun getName-35NQdnY ()Ljava/lang/String;
+	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
+	public final fun getRejectedEvents ()J
+	public final fun getScopes ()Ljava/util/Set;
+	public final fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public final fun isReady ()Z
+	public final fun load ([Lcom/davils/kontext/core/Module;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun load$default (Lcom/davils/kontext/core/Container;[Lcom/davils/kontext/core/Module;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun onClosed (Lkotlin/jvm/functions/Function0;)V
+	public final fun openOrGetScope-TYnjks0 (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/Scope;
+	public static synthetic fun openOrGetScope-TYnjks0$default (Lcom/davils/kontext/core/Container;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/Scope;
+	public final fun openScope--Qp24ec (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/Scope;
+	public static synthetic fun openScope--Qp24ec$default (Lcom/davils/kontext/core/Container;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/Scope;
+	public fun resolve (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public fun resolveAll (Lkotlin/reflect/KType;)Ljava/util/List;
+	public fun resolveAllAsync (Lkotlin/reflect/KType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveAsync (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveAsyncOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public final fun scope-HoTypE0 (Ljava/lang/String;)Lcom/davils/kontext/core/Scope;
+	public final fun scopeOrNull-HoTypE0 (Ljava/lang/String;)Lcom/davils/kontext/core/Scope;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ContainerLimits {
+	public static final field INSTANCE Lcom/davils/kontext/core/ContainerLimits;
+	public static final field MAX_LINKS I
+	public static final field MAX_NAME_LENGTH I
+	public static final field MAX_OPEN_SCOPES I
+	public static final field MAX_PARAMETERS I
+	public static final field MAX_RESOLUTION_DEPTH I
+}
+
+public final class com/davils/kontext/core/ContainerName {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/ContainerName;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ContainerSetup {
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ContainerSetupKt {
+	public static final fun containerSetup (Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/ContainerSetup;
+}
+
+public final class com/davils/kontext/core/ContainersKt {
+	public static final fun container-DgakQ2Q (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun container-DgakQ2Q$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract class com/davils/kontext/core/DefinitionContext : com/davils/kontext/core/Resolver {
+	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getParameters ()Lcom/davils/kontext/core/parameter/Parameters;
+}
+
+public final class com/davils/kontext/core/DefinitionKey {
+	public static final field Companion Lcom/davils/kontext/core/DefinitionKey$Companion;
+	public fun <init> (Lkotlin/reflect/KType;Lcom/davils/kontext/core/Qualifier;)V
+	public synthetic fun <init> (Lkotlin/reflect/KType;Lcom/davils/kontext/core/Qualifier;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getQualifier ()Lcom/davils/kontext/core/Qualifier;
+	public final fun getType ()Lkotlin/reflect/KType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/DefinitionKey$Companion {
+}
+
+public final class com/davils/kontext/core/LazyModule {
+	public final fun getName-HXI5FQ8 ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/Module {
+	public final fun getIncludes ()Ljava/util/List;
+	public final fun getName-HXI5FQ8 ()Ljava/lang/String;
+	public final fun plus (Lcom/davils/kontext/core/Module;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ModuleHandle {
+	public final fun getModules ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+	public final fun unload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/davils/kontext/core/ModuleKt {
+	public static final fun plus (Ljava/util/List;Lcom/davils/kontext/core/Module;)Ljava/util/List;
+}
+
+public final class com/davils/kontext/core/ModuleName {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/ModuleName;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ModulesKt {
+	public static final fun lazyModule (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/LazyModule;
+	public static final fun module (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/Module;
+	public static synthetic fun module$default (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/Module;
+}
+
+public final class com/davils/kontext/core/Profile {
+	public static final field Companion Lcom/davils/kontext/core/Profile$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/Profile;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/Profile$Companion {
+	public final fun getDEFAULT-xuI1QKg ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/core/Qualifier {
+	public static final field Companion Lcom/davils/kontext/core/Qualifier$Companion;
+}
+
+public final class com/davils/kontext/core/Qualifier$Companion {
+	public final fun of (Ljava/lang/Enum;)Lcom/davils/kontext/core/Qualifier;
+	public final fun typed (Lkotlin/reflect/KType;)Lcom/davils/kontext/core/Qualifier;
+}
+
+public final class com/davils/kontext/core/Qualifier$Named : com/davils/kontext/core/Qualifier {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/Qualifier$Typed : com/davils/kontext/core/Qualifier {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlin/reflect/KType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/QualifierKt {
+	public static final fun Qualifier (Ljava/lang/String;)Lcom/davils/kontext/core/Qualifier;
+}
+
+public abstract class com/davils/kontext/core/Resolver {
+	public abstract fun detached ()Lcom/davils/kontext/core/Resolver;
+	public final fun property (Ljava/lang/String;)Ljava/lang/String;
+	public final fun property (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;)Ljava/lang/Object;
+	public final fun property (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun propertyOrNull (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;)Ljava/lang/Object;
+	public abstract fun resolve (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public static synthetic fun resolve$default (Lcom/davils/kontext/core/Resolver;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun resolveAll (Lkotlin/reflect/KType;)Ljava/util/List;
+	public abstract fun resolveAllAsync (Lkotlin/reflect/KType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun resolveAsync (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun resolveAsync$default (Lcom/davils/kontext/core/Resolver;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun resolveAsyncOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun resolveAsyncOrNull$default (Lcom/davils/kontext/core/Resolver;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun resolveOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public static synthetic fun resolveOrNull$default (Lcom/davils/kontext/core/Resolver;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/davils/kontext/core/Scope : com/davils/kontext/core/Resolver {
+	public final fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun declareKey (Lcom/davils/kontext/core/DefinitionKey;Ljava/lang/Object;)V
+	public synthetic fun detached ()Lcom/davils/kontext/core/Resolver;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getId ()Lcom/davils/kore/core/identity/UuidV7;
+	public final fun getKey-95TaE5E ()Ljava/lang/String;
+	public final fun getScopeId-oGc-R0g ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isOpen ()Z
+	public final fun link (Lcom/davils/kontext/core/Scope;)V
+	public final fun onClosed (Lkotlin/jvm/functions/Function0;)V
+	public final fun openScope--Qp24ec (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/Scope;
+	public static synthetic fun openScope--Qp24ec$default (Lcom/davils/kontext/core/Scope;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/Scope;
+	public fun resolve (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public fun resolveAll (Lkotlin/reflect/KType;)Ljava/util/List;
+	public fun resolveAllAsync (Lkotlin/reflect/KType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveAsync (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveAsyncOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resolveOrNull (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+	public final fun unlink (Lcom/davils/kontext/core/Scope;)Z
+}
+
+public final class com/davils/kontext/core/ScopeId {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/ScopeId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ScopeKey {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/ScopeKey;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/ScopeSeed {
+	public final fun put (Lcom/davils/kontext/core/DefinitionKey;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/TypesKt {
+	public static final fun sameType (Lkotlin/reflect/KType;Lkotlin/reflect/KType;)Z
+}
+
+public final class com/davils/kontext/core/UsesKt {
+	public static final fun use (Lcom/davils/kontext/core/Container;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun use (Lcom/davils/kontext/core/Scope;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withScope-rdhlZVk (Lcom/davils/kontext/core/Container;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withScope-rdhlZVk$default (Lcom/davils/kontext/core/Container;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/davils/kontext/core/VerificationsKt {
+	public static final fun verify (Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun verify$default (Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun verifyStatically (Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/verify/Verification;
+	public static synthetic fun verifyStatically$default (Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/verify/Verification;
+}
+
+public abstract interface class com/davils/kontext/core/component/ContainerComponent {
+	public abstract fun getResolver ()Lcom/davils/kontext/core/Resolver;
+}
+
+public abstract interface class com/davils/kontext/core/component/GlobalComponent : com/davils/kontext/core/component/ContainerComponent {
+	public fun getResolver ()Lcom/davils/kontext/core/Resolver;
+}
+
+public abstract interface class com/davils/kontext/core/component/ScopeComponent : com/davils/kontext/core/component/ContainerComponent {
+	public fun getResolver ()Lcom/davils/kontext/core/Resolver;
+	public abstract fun getScope ()Lcom/davils/kontext/core/Scope;
+}
+
+public abstract interface class com/davils/kontext/core/container/CloseReport {
+	public abstract fun getFailures ()Ljava/util/List;
+	public abstract fun isClean ()Z
+}
+
+public final class com/davils/kontext/core/container/CloseReport$AlreadyClosed : com/davils/kontext/core/container/CloseReport {
+	public static final field INSTANCE Lcom/davils/kontext/core/container/CloseReport$AlreadyClosed;
+	public fun getFailures ()Ljava/util/List;
+	public fun isClean ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/container/CloseReport$Closed : com/davils/kontext/core/container/CloseReport {
+	public fun getFailures ()Ljava/util/List;
+	public fun isClean ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/container/ContainerBuilder : com/davils/kore/core/dsl/ValidatingBuilder {
+	public static final field Companion Lcom/davils/kontext/core/container/ContainerBuilder$Companion;
+	public synthetic fun assemble ()Lcom/davils/kore/core/validation/Validatable;
+	public final fun extensions ([Lcom/davils/kontext/core/extension/ContainerExtension;)V
+	public final fun fallbacks ([Lcom/davils/kontext/core/extension/ResolutionFallback;)V
+	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getIds ()Lcom/davils/kore/core/identity/generator/UuidGenerator;
+	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
+	public final fun getName-35NQdnY ()Ljava/lang/String;
+	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
+	public final fun getScopeLimit ()I
+	public final fun getSink ()Lcom/davils/kontext/core/observe/ContainerSink;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
+	public final fun include (Lcom/davils/kontext/core/ContainerSetup;)V
+	public final fun lazyModules ([Lcom/davils/kontext/core/LazyModule;)V
+	public final fun modules (Ljava/util/List;)V
+	public final fun modules ([Lcom/davils/kontext/core/Module;)V
+	public final fun properties (Lkotlin/jvm/functions/Function1;)V
+	public final fun replace ([Lcom/davils/kontext/core/Module;)V
+	public final fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
+	public final fun setIds (Lcom/davils/kore/core/identity/generator/UuidGenerator;)V
+	public final fun setMeters (Lcom/davils/kollect/core/MeterRegistry;)V
+	public final fun setName-jghbKhg (Ljava/lang/String;)V
+	public final fun setScopeLimit (I)V
+	public final fun setSink (Lcom/davils/kontext/core/observe/ContainerSink;)V
+	public final fun setTimeSource (Lkotlin/time/TimeSource$WithComparableMarks;)V
+	public final fun setTracer (Lcom/davils/kollect/core/trace/Tracer;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/container/ContainerBuilder$Companion {
+	public final fun getCHILD-35NQdnY ()Ljava/lang/String;
+	public final fun getROOT-35NQdnY ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/container/ContainerConfiguration : com/davils/kore/core/validation/Validatable {
+	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
+	public final fun getExtensions ()Ljava/util/List;
+	public final fun getFallbacks ()Ljava/util/List;
+	public final fun getIds ()Lcom/davils/kore/core/identity/generator/UuidGenerator;
+	public final fun getLazyModules ()Ljava/util/List;
+	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
+	public final fun getModules ()Ljava/util/List;
+	public final fun getName-35NQdnY ()Ljava/lang/String;
+	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
+	public final fun getPropertySources ()Ljava/util/List;
+	public final fun getReplacements ()Ljava/util/List;
+	public final fun getScopeLimit ()I
+	public final fun getSink ()Lcom/davils/kontext/core/observe/ContainerSink;
+	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
+	public final fun getTracer ()Lcom/davils/kollect/core/trace/Tracer;
+	public fun toString ()Ljava/lang/String;
+	public fun validate (Lcom/davils/kore/core/validation/ValidationScope;)V
+}
+
+public final class com/davils/kontext/core/container/ContainerState : java/lang/Enum {
+	public static final field Closed Lcom/davils/kontext/core/container/ContainerState;
+	public static final field Closing Lcom/davils/kontext/core/container/ContainerState;
+	public static final field Running Lcom/davils/kontext/core/container/ContainerState;
+	public static final field Starting Lcom/davils/kontext/core/container/ContainerState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kontext/core/container/ContainerState;
+	public static fun values ()[Lcom/davils/kontext/core/container/ContainerState;
+}
+
+public final class com/davils/kontext/core/container/DisposalFailure {
+	public final fun getCause ()Ljava/lang/Throwable;
+	public final fun getKey ()Lcom/davils/kontext/core/DefinitionKey;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/definition/Definition {
+	public final fun alias (Lcom/davils/kontext/core/DefinitionKey;)V
+	public final fun getKey ()Lcom/davils/kontext/core/DefinitionKey;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/davils/kontext/core/definition/DefinitionBuilder {
+	public final fun declareAssisted (Lcom/davils/kontext/core/DefinitionKey;Lkotlin/jvm/functions/Function2;)Lcom/davils/kontext/core/definition/Definition;
+	public final fun declareAsync (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/definition/Lifetime;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lcom/davils/kontext/core/extension/Retention;)Lcom/davils/kontext/core/definition/Definition;
+	public static synthetic fun declareAsync$default (Lcom/davils/kontext/core/definition/DefinitionBuilder;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/definition/Lifetime;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lcom/davils/kontext/core/extension/Retention;ILjava/lang/Object;)Lcom/davils/kontext/core/definition/Definition;
+	public final fun declareProvided (Lcom/davils/kontext/core/DefinitionKey;)Lcom/davils/kontext/core/definition/Definition;
+	public final fun declareSync (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/definition/Lifetime;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;Ljava/util/List;Lcom/davils/kontext/core/extension/Retention;)Lcom/davils/kontext/core/definition/Definition;
+	public static synthetic fun declareSync$default (Lcom/davils/kontext/core/definition/DefinitionBuilder;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/definition/Lifetime;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function2;Ljava/util/List;Lcom/davils/kontext/core/extension/Retention;ILjava/lang/Object;)Lcom/davils/kontext/core/definition/Definition;
+}
+
+public final class com/davils/kontext/core/definition/Lifetime : java/lang/Enum {
+	public static final field Factory Lcom/davils/kontext/core/definition/Lifetime;
+	public static final field Scoped Lcom/davils/kontext/core/definition/Lifetime;
+	public static final field Single Lcom/davils/kontext/core/definition/Lifetime;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kontext/core/definition/Lifetime;
+	public static fun values ()[Lcom/davils/kontext/core/definition/Lifetime;
+}
+
+public final class com/davils/kontext/core/definition/ModuleBuilder : com/davils/kontext/core/definition/DefinitionBuilder {
+	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getName-HXI5FQ8 ()Ljava/lang/String;
+	public final fun include ([Lcom/davils/kontext/core/Module;)V
+	public final fun isEager ()Z
+	public final fun scope-zGizgrA (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun scope-zGizgrA$default (Lcom/davils/kontext/core/definition/ModuleBuilder;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+	public final fun variant (Ljava/util/Set;Lkotlin/jvm/functions/Function1;)V
+	public final fun variant-C0AK0Ns (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/davils/kontext/core/definition/NewConstructorsKt {
+	public static final fun new (Lcom/davils/kontext/core/Resolver;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class com/davils/kontext/core/definition/ScopeBuilder : com/davils/kontext/core/definition/DefinitionBuilder {
+	public final fun getKey-95TaE5E ()Ljava/lang/String;
+	public final fun getWithin-LEEgzf0 ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ContainerAlreadyStartedException : java/lang/IllegalStateException {
+	public final fun getContainer-35NQdnY ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ContainerClosedException : java/lang/IllegalStateException {
+	public final fun getContainer-35NQdnY ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ContainerNotStartedException : java/lang/IllegalStateException {
+}
+
+public final class com/davils/kontext/core/error/ContainerViolationCodes {
+	public static final field INSTANCE Lcom/davils/kontext/core/error/ContainerViolationCodes;
+	public final fun getCONFLICTING_SCOPE_NESTING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getCYCLIC_SCOPE_NESTING-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDUPLICATE_DEFINITION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getDUPLICATE_MODULE-J_S2PC0 ()Ljava/lang/String;
+	public final fun getRESERVED_DEFINITION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getSHADOWED_DEFINITION-J_S2PC0 ()Ljava/lang/String;
+	public final fun getUNKNOWN_REPLACEMENT-J_S2PC0 ()Ljava/lang/String;
+	public final fun getUNKNOWN_SCOPE-J_S2PC0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionException : java/lang/IllegalStateException {
+	public final fun getFailure ()Lcom/davils/kontext/core/error/ResolutionFailure;
+}
+
+public abstract class com/davils/kontext/core/error/ResolutionFailure {
+	public synthetic fun <init> (Lcom/davils/kontext/core/DefinitionKey;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getKey ()Lcom/davils/kontext/core/DefinitionKey;
+	public final fun getPath ()Ljava/util/List;
+	public abstract fun getReason ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Ambiguous : com/davils/kontext/core/error/ResolutionFailure {
+	public final fun getCandidates ()Ljava/util/List;
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Circular : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Closed : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Failed : com/davils/kontext/core/error/ResolutionFailure {
+	public final fun getCause ()Ljava/lang/Throwable;
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Mismatched : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Missing : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$NotReady : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$ParametersRefused : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Suspending : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$TooDeep : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ResolutionFailure$Unprovided : com/davils/kontext/core/error/ResolutionFailure {
+	public fun getReason ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ScopeAlreadyOpenException : java/lang/IllegalStateException {
+	public final fun getId-KT6OV38 ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ScopeLimitException : java/lang/IllegalStateException {
+	public final fun getLimit ()I
+}
+
+public final class com/davils/kontext/core/error/ScopeNestingException : java/lang/IllegalArgumentException {
+	public final fun getActual-LEEgzf0 ()Ljava/lang/String;
+	public final fun getExpected-LEEgzf0 ()Ljava/lang/String;
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ScopeNotDeclaredException : java/lang/IllegalArgumentException {
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ScopeNotOpenException : java/lang/IllegalStateException {
+	public final fun getId-KT6OV38 ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/error/ScopeSeedException : java/lang/IllegalArgumentException {
+	public final fun getDefinition ()Lcom/davils/kontext/core/DefinitionKey;
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/core/extension/ContainerExtension {
+	public abstract fun getName ()Ljava/lang/String;
+	public fun onClosing (Lcom/davils/kontext/core/Container;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun onModulesLoaded (Lcom/davils/kontext/core/Container;Ljava/util/List;)V
+	public fun onModulesUnloaded (Lcom/davils/kontext/core/Container;Ljava/util/List;)V
+	public fun onStarted (Lcom/davils/kontext/core/Container;)V
+}
+
+public abstract interface class com/davils/kontext/core/extension/ResolutionFallback {
+	public abstract fun resolve (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/Resolver;)Ljava/lang/Object;
+}
+
+public abstract interface class com/davils/kontext/core/extension/Retention {
+	public static final field Companion Lcom/davils/kontext/core/extension/Retention$Companion;
+	public abstract fun keeps-LRDsOJo (J)Z
+}
+
+public final class com/davils/kontext/core/extension/Retention$Companion {
+	public final fun expireAfter-LRDsOJo (J)Lcom/davils/kontext/core/extension/Retention;
+	public final fun getFOREVER ()Lcom/davils/kontext/core/extension/Retention;
+}
+
+public class com/davils/kontext/core/holder/ContainerHolder {
+	public fun <init> ()V
+	public final fun getCurrent ()Lcom/davils/kontext/core/Container;
+	public final fun getCurrentOrNull ()Lcom/davils/kontext/core/Container;
+	public final fun load ([Lcom/davils/kontext/core/Module;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun load$default (Lcom/davils/kontext/core/holder/ContainerHolder;[Lcom/davils/kontext/core/Module;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun start-DgakQ2Q (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun start-DgakQ2Q$default (Lcom/davils/kontext/core/holder/ContainerHolder;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun stop (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/holder/GlobalContainer : com/davils/kontext/core/holder/ContainerHolder {
+	public static final field INSTANCE Lcom/davils/kontext/core/holder/GlobalContainer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/davils/kontext/core/holder/GlobalContainerApi : java/lang/annotation/Annotation {
+}
+
+public final class com/davils/kontext/core/java/JavaModuleBuilder {
+	public final fun bind (Ljava/lang/Class;Ljava/lang/Class;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun factory (Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun factory (Ljava/lang/Class;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public static synthetic fun factory$default (Lcom/davils/kontext/core/java/JavaModuleBuilder;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;ILjava/lang/Object;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun single (Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public final fun single (Ljava/lang/Class;Ljava/util/function/Function;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public static synthetic fun single$default (Lcom/davils/kontext/core/java/JavaModuleBuilder;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Ljava/util/function/Function;ILjava/lang/Object;)Lcom/davils/kontext/core/java/JavaModuleBuilder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/java/JavaModules {
+	public static final field INSTANCE Lcom/davils/kontext/core/java/JavaModules;
+	public static final fun close (Lcom/davils/kontext/core/Container;)Lcom/davils/kontext/core/container/CloseReport;
+	public static final fun module (Ljava/lang/String;Ljava/util/function/Consumer;)Lcom/davils/kontext/core/Module;
+	public static final fun start-C0AK0Ns (Ljava/lang/String;Ljava/util/function/Consumer;)Lcom/davils/kontext/core/Container;
+}
+
+public final class com/davils/kontext/core/java/JavaResolvers {
+	public static final field INSTANCE Lcom/davils/kontext/core/java/JavaResolvers;
+	public static final fun get (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;)Ljava/lang/Object;
+	public static final fun get (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;)Ljava/lang/Object;
+	public static final fun get (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
+	public static synthetic fun get$default (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;Lcom/davils/kontext/core/parameter/Parameters;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun getOrNull (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;)Ljava/lang/Object;
+	public static final fun getOrNull (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;)Ljava/lang/Object;
+	public static synthetic fun getOrNull$default (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun inject (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;)Ljava/util/function/Supplier;
+	public static final fun inject (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;)Ljava/util/function/Supplier;
+	public static synthetic fun inject$default (Lcom/davils/kontext/core/Resolver;Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;ILjava/lang/Object;)Ljava/util/function/Supplier;
+	public static final fun keyOf (Ljava/lang/Class;)Lcom/davils/kontext/core/DefinitionKey;
+	public static final fun keyOf (Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;)Lcom/davils/kontext/core/DefinitionKey;
+	public static synthetic fun keyOf$default (Ljava/lang/Class;Lcom/davils/kontext/core/Qualifier;ILjava/lang/Object;)Lcom/davils/kontext/core/DefinitionKey;
+}
+
+public abstract class com/davils/kontext/core/observe/ContainerEvent : com/davils/konfetti/core/Event {
+	public static final field Companion Lcom/davils/kontext/core/observe/ContainerEvent$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getContainer-35NQdnY ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ChildOpened : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getChild-35NQdnY ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$Closed : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getElapsed-UwyO8pc ()J
+	public final fun getFailures ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$Companion {
+	public final fun getTOPIC ()Lcom/davils/konfetti/core/TopicKey;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$DisposalFailed : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getKey ()Lcom/davils/kontext/core/DefinitionKey;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ExtensionFailed : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getExtension ()Ljava/lang/String;
+	public final fun getPhase ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$InstanceCreated : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getElapsed-UwyO8pc ()J
+	public final fun getKey ()Lcom/davils/kontext/core/DefinitionKey;
+	public final fun getLifetime ()Lcom/davils/kontext/core/definition/Lifetime;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ModulesLoaded : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getModules ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ModulesUnloaded : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getModules ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ResolutionFailed : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getFailure ()Lcom/davils/kontext/core/error/ResolutionFailure;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ScopeClosed : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getFailures ()I
+	public final fun getId ()Lcom/davils/kore/core/identity/UuidV7;
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$ScopeOpened : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getId ()Lcom/davils/kore/core/identity/UuidV7;
+	public final fun getScope-95TaE5E ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/observe/ContainerEvent$Started : com/davils/kontext/core/observe/ContainerEvent {
+	public final fun getDefinitions ()I
+	public final fun getElapsed-UwyO8pc ()J
+	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/core/observe/ContainerSink {
+	public abstract fun record (Lcom/davils/kontext/core/observe/ContainerEvent;)V
+}
+
+public final class com/davils/kontext/core/observe/TextLevel : java/lang/Enum {
+	public static final field Debug Lcom/davils/kontext/core/observe/TextLevel;
+	public static final field Info Lcom/davils/kontext/core/observe/TextLevel;
+	public static final field Warning Lcom/davils/kontext/core/observe/TextLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/davils/kontext/core/observe/TextLevel;
+	public static fun values ()[Lcom/davils/kontext/core/observe/TextLevel;
+}
+
+public abstract interface class com/davils/kontext/core/observe/TextSink {
+	public abstract fun write (Lcom/davils/kontext/core/observe/TextLevel;Ljava/lang/String;)V
+}
+
+public final class com/davils/kontext/core/observe/TextSinksKt {
+	public static final fun asContainerSink (Lcom/davils/kontext/core/observe/TextSink;Lcom/davils/kontext/core/observe/TextLevel;)Lcom/davils/kontext/core/observe/ContainerSink;
+	public static synthetic fun asContainerSink$default (Lcom/davils/kontext/core/observe/TextSink;Lcom/davils/kontext/core/observe/TextLevel;ILjava/lang/Object;)Lcom/davils/kontext/core/observe/ContainerSink;
+}
+
+public final class com/davils/kontext/core/parameter/Parameter {
+	public fun <init> (Ljava/lang/Object;Lkotlin/reflect/KType;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Lkotlin/reflect/KType;
+	public final fun copy (Ljava/lang/Object;Lkotlin/reflect/KType;)Lcom/davils/kontext/core/parameter/Parameter;
+	public static synthetic fun copy$default (Lcom/davils/kontext/core/parameter/Parameter;Ljava/lang/Object;Lkotlin/reflect/KType;ILjava/lang/Object;)Lcom/davils/kontext/core/parameter/Parameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lkotlin/reflect/KType;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/parameter/ParameterException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class com/davils/kontext/core/parameter/ParameterFactoriesKt {
+	public static final fun parametersOf (Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/parameter/Parameters;
+	public static final fun parametersOf ([Ljava/lang/Object;)Lcom/davils/kontext/core/parameter/Parameters;
+}
+
+public final class com/davils/kontext/core/parameter/ParameterKt {
+	public static final fun matches (Lcom/davils/kontext/core/parameter/Parameter;Lkotlin/reflect/KType;Lkotlin/jvm/functions/Function1;)Z
+}
+
+public final class com/davils/kontext/core/parameter/Parameters {
+	public static final field Companion Lcom/davils/kontext/core/parameter/Parameters$Companion;
+	public final fun at (I)Lcom/davils/kontext/core/parameter/Parameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSize ()I
+	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun isEmpty ()Z
+	public final fun nameOf (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public final fun only (Lkotlin/reflect/KClass;Ljava/util/List;)Ljava/lang/Object;
+	public final fun onlyOrNull (Lkotlin/reflect/KClass;Ljava/util/List;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/parameter/Parameters$Companion {
+	public final fun getEMPTY ()Lcom/davils/kontext/core/parameter/Parameters;
+}
+
+public final class com/davils/kontext/core/parameter/ParametersBuilder {
+	public final fun put (Ljava/lang/Object;Lkotlin/reflect/KType;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/property/PropertiesBuilder {
+	public final fun source (Lcom/davils/kontext/core/property/PropertySource;)V
+	public fun toString ()Ljava/lang/String;
+	public final fun values ([Lkotlin/Pair;)V
+}
+
+public final class com/davils/kontext/core/property/PropertyException : java/lang/IllegalStateException {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getKey-GIE-kM0 ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/property/PropertyKey {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lcom/davils/kontext/core/property/PropertyKey;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/core/property/PropertySource {
+	public static final field Companion Lcom/davils/kontext/core/property/PropertySource$Companion;
+	public abstract fun valueOf-A2QouqI (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/property/PropertySource$Companion {
+	public final fun getEMPTY ()Lcom/davils/kontext/core/property/PropertySource;
+	public final fun of (Ljava/util/Map;)Lcom/davils/kontext/core/property/PropertySource;
+}
+
+public abstract interface class com/davils/kontext/core/verify/Verification {
+	public abstract fun getProfiles ()Ljava/util/Set;
+	public abstract fun isPassed ()Z
+}
+
+public final class com/davils/kontext/core/verify/Verification$Failed : com/davils/kontext/core/verify/Verification {
+	public final fun getProblems ()Ljava/util/List;
+	public fun getProfiles ()Ljava/util/Set;
+	public fun isPassed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/verify/Verification$Passed : com/davils/kontext/core/verify/Verification {
+	public fun getProfiles ()Ljava/util/Set;
+	public final fun getResolved ()I
+	public fun isPassed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/verify/VerificationProblem {
+	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
+	public final fun getReason ()Lcom/davils/kontext/core/verify/VerificationReason;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/core/verify/VerificationReason {
+}
+
+public final class com/davils/kontext/core/verify/VerificationReason$Invalid : com/davils/kontext/core/verify/VerificationReason {
+	public final fun getReport ()Lcom/davils/kore/core/validation/report/ValidationReport;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/verify/VerificationReason$Undisposable : com/davils/kontext/core/verify/VerificationReason {
+	public final fun getFailure ()Lcom/davils/kontext/core/container/DisposalFailure;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/verify/VerificationReason$Unresolvable : com/davils/kontext/core/verify/VerificationReason {
+	public final fun getFailure ()Lcom/davils/kontext/core/error/ResolutionFailure;
+	public fun toString ()Ljava/lang/String;
+}
+

@@ -1,0 +1,32 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-environment>
+abstract fun interface com.davils.kontext.environment/PropertyNaming { // com.davils.kontext.environment/PropertyNaming|null[0]
+    abstract fun nameOf(com.davils.kontext.core.property/PropertyKey): kotlin/String // com.davils.kontext.environment/PropertyNaming.nameOf|nameOf(com.davils.kontext.core.property.PropertyKey){}[0]
+
+    final object Companion { // com.davils.kontext.environment/PropertyNaming.Companion|null[0]
+        final val UPPER_SNAKE // com.davils.kontext.environment/PropertyNaming.Companion.UPPER_SNAKE|{}UPPER_SNAKE[0]
+            final fun <get-UPPER_SNAKE>(): com.davils.kontext.environment/PropertyNaming // com.davils.kontext.environment/PropertyNaming.Companion.UPPER_SNAKE.<get-UPPER_SNAKE>|<get-UPPER_SNAKE>(){}[0]
+
+        final fun prefixed(kotlin/String): com.davils.kontext.environment/PropertyNaming // com.davils.kontext.environment/PropertyNaming.Companion.prefixed|prefixed(kotlin.String){}[0]
+    }
+}
+
+final class com.davils.kontext.environment/EnvironmentPropertySource : com.davils.kontext.core.property/PropertySource { // com.davils.kontext.environment/EnvironmentPropertySource|null[0]
+    constructor <init>(com.davils.knot.environment/Environment, com.davils.kontext.environment/PropertyNaming = ...) // com.davils.kontext.environment/EnvironmentPropertySource.<init>|<init>(com.davils.knot.environment.Environment;com.davils.kontext.environment.PropertyNaming){}[0]
+
+    final val environment // com.davils.kontext.environment/EnvironmentPropertySource.environment|{}environment[0]
+        final fun <get-environment>(): com.davils.knot.environment/Environment // com.davils.kontext.environment/EnvironmentPropertySource.environment.<get-environment>|<get-environment>(){}[0]
+    final val naming // com.davils.kontext.environment/EnvironmentPropertySource.naming|{}naming[0]
+        final fun <get-naming>(): com.davils.kontext.environment/PropertyNaming // com.davils.kontext.environment/EnvironmentPropertySource.naming.<get-naming>|<get-naming>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kontext.environment/EnvironmentPropertySource.toString|toString(){}[0]
+    final fun valueOf(com.davils.kontext.core.property/PropertyKey): kotlin/String? // com.davils.kontext.environment/EnvironmentPropertySource.valueOf|valueOf(com.davils.kontext.core.property.PropertyKey){}[0]
+}
+
+final fun (com.davils.kontext.core.property/PropertiesBuilder).com.davils.kontext.environment/environment(com.davils.knot.environment/Environment, com.davils.kontext.environment/PropertyNaming = ...) // com.davils.kontext.environment/environment|environment@com.davils.kontext.core.property.PropertiesBuilder(com.davils.knot.environment.Environment;com.davils.kontext.environment.PropertyNaming){}[0]

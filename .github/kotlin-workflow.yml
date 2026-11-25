@@ -1,0 +1,140 @@
+#
+# Copyright 2026 Davils
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# What the pipeline of Kontext does. Every key overrides a default of
+# actions/plan/defaults.yml in davils-com/kotlin-workflow; a key that is not there stops the run.
+version: 1
+gradle:
+  args: ["--stacktrace"]
+
+check:
+  tasks: [check]
+  reproducible:
+    clean-tasks:
+      - ":kontext-core:clean"
+      - ":kontext-environment:clean"
+      - ":kontext-shutdown:clean"
+      - ":kontext-testing:clean"
+    tasks:
+      - ":kontext-core:jvmJar"
+      - ":kontext-environment:jvmJar"
+      - ":kontext-shutdown:jvmJar"
+      - ":kontext-testing:jvmJar"
+    artifacts:
+      - "kontext-core/build/libs/*.jar"
+      - "kontext-environment/build/libs/*.jar"
+      - "kontext-shutdown/build/libs/*.jar"
+      - "kontext-testing/build/libs/*.jar"
+
+policy:
+  # A container locks on the JVM only, so develop, main and a tag run on Windows too.
+  push-develop:
+    stages: [check, snapshot]
+    os: [ubuntu-latest, windows-latest]
+    overrides:
+      check:
+        reproducible: { enabled: true }
+  push-main:
+    os: [ubuntu-latest, windows-latest]
+    overrides:
+      check:
+        reproducible: { enabled: true }
+  tag:
+    os: [ubuntu-latest, windows-latest]
+
+security:
+  gradle:
+    tasks: ["kreateAssurance"]
+  dependency-submission:
+    enabled: false
+
+publish:
+  build-tasks: [assemble]
+  tasks:
+    - ":kontext-core:publishAllPublicationsToDavilsRepository"
+    - ":kontext-environment:publishAllPublicationsToDavilsRepository"
+    - ":kontext-shutdown:publishAllPublicationsToDavilsRepository"
+    - ":kontext-testing:publishAllPublicationsToDavilsRepository"
+    - ":kontext-bom:publishAllPublicationsToDavilsRepository"
+
+snapshot:
+  # Kontext's own build makes every build without a release tag a snapshot.
+  kreate-snapshot: false
+
+release:
+  publications:
+    discovery: explicit
+    # In upload order: the publication of every target before the multiplatform publication that names them.
+    list:
+      - path: com/davils/kontext-core-jvm
+        artifact: kontext-core-jvm
+        task: ":kontext-core:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-core-wasm-js
+        artifact: kontext-core-wasm-js
+        task: ":kontext-core:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-core
+        artifact: kontext-core
+        task: ":kontext-core:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-environment-jvm
+        artifact: kontext-environment-jvm
+        task: ":kontext-environment:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-environment-wasm-js
+        artifact: kontext-environment-wasm-js
+        task: ":kontext-environment:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-environment
+        artifact: kontext-environment
+        task: ":kontext-environment:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-shutdown-jvm
+        artifact: kontext-shutdown-jvm
+        task: ":kontext-shutdown:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-shutdown-wasm-js
+        artifact: kontext-shutdown-wasm-js
+        task: ":kontext-shutdown:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-shutdown
+        artifact: kontext-shutdown
+        task: ":kontext-shutdown:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-testing-jvm
+        artifact: kontext-testing-jvm
+        task: ":kontext-testing:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-testing-wasm-js
+        artifact: kontext-testing-wasm-js
+        task: ":kontext-testing:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-testing
+        artifact: kontext-testing
+        task: ":kontext-testing:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-bom
+        artifact: kontext-bom
+        task: ":kontext-bom:publishMavenPublicationToDavilsRepository"
+  attest:
+    subjects:
+      - "kontext-core/build/libs/*.jar"
+      - "kontext-core/build/libs/*.klib"
+      - "kontext-environment/build/libs/*.jar"
+      - "kontext-environment/build/libs/*.klib"
+      - "kontext-shutdown/build/libs/*.jar"
+      - "kontext-shutdown/build/libs/*.klib"
+      - "kontext-testing/build/libs/*.jar"
+      - "kontext-testing/build/libs/*.klib"
+  github-release:
+    enabled: false
+
+# How a pull request of Dependabot repairs itself, see CONTRIBUTING.md, "Changing a Dependency".
+dependencies:
+  lock:
+    invocations:
+      - ["kreateResolveAndLockAll", "--write-locks", "--no-configuration-cache"]
+  verification:
+    tasks: [check]

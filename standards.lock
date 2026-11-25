@@ -1,0 +1,39 @@
+{
+    "schemaVersion": 1,
+    "standards": [
+        {
+            "id": "rfc:9562",
+            "reviewedOn": "2026-11-25",
+            "note": "Reviewed with the first version: scope ids are UUIDv7 of Kore, refused names are shown through SafeText.",
+            "snapshot": {
+                "title": "Universally Unique IDentifiers (UUIDs)",
+                "status": "PROPOSED STANDARD",
+                "published": "May 2024",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {
+                    "7929": "VERIFIED",
+                    "7931": "REPORTED",
+                    "7955": "VERIFIED",
+                    "7958": "VERIFIED",
+                    "8288": "VERIFIED",
+                    "8695": "VERIFIED"
+                }
+            }
+        },
+        {
+            "id": "unicode:ucd",
+            "reviewedOn": "2026-11-25",
+            "note": "Reviewed with the first version: scope ids are UUIDv7 of Kore, refused names are shown through SafeText.",
+            "snapshot": {
+                "title": "Unicode Character Database",
+                "revision": "18.0.0",
+                "withdrawn": false,
+                "replacedBy": [],
+                "updatedBy": [],
+                "errata": {}
+            }
+        }
+    ]
+}

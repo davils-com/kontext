@@ -1,0 +1,10 @@
+public final class com/davils/kontext/shutdown/ContainerCloseException : java/lang/IllegalStateException {
+	public final fun getContainer-35NQdnY ()Ljava/lang/String;
+	public final fun getFailures ()Ljava/util/List;
+}
+
+public final class com/davils/kontext/shutdown/ShutdownBindingsKt {
+	public static final fun adopt (Lcom/davils/knot/shutdown/Shutdown;Lcom/davils/kontext/core/Container;Lcom/davils/knot/shutdown/ShutdownPhase;)Lcom/davils/knot/shutdown/ShutdownRegistration;
+	public static synthetic fun adopt$default (Lcom/davils/knot/shutdown/Shutdown;Lcom/davils/kontext/core/Container;Lcom/davils/knot/shutdown/ShutdownPhase;ILjava/lang/Object;)Lcom/davils/knot/shutdown/ShutdownRegistration;
+}
+

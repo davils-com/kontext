@@ -1,0 +1,24 @@
+public final class com/davils/kontext/environment/EnvironmentPropertiesKt {
+	public static final fun environment (Lcom/davils/kontext/core/property/PropertiesBuilder;Lcom/davils/knot/environment/Environment;Lcom/davils/kontext/environment/PropertyNaming;)V
+	public static synthetic fun environment$default (Lcom/davils/kontext/core/property/PropertiesBuilder;Lcom/davils/knot/environment/Environment;Lcom/davils/kontext/environment/PropertyNaming;ILjava/lang/Object;)V
+}
+
+public final class com/davils/kontext/environment/EnvironmentPropertySource : com/davils/kontext/core/property/PropertySource {
+	public fun <init> (Lcom/davils/knot/environment/Environment;Lcom/davils/kontext/environment/PropertyNaming;)V
+	public synthetic fun <init> (Lcom/davils/knot/environment/Environment;Lcom/davils/kontext/environment/PropertyNaming;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getEnvironment ()Lcom/davils/knot/environment/Environment;
+	public final fun getNaming ()Lcom/davils/kontext/environment/PropertyNaming;
+	public fun toString ()Ljava/lang/String;
+	public fun valueOf-A2QouqI (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract interface class com/davils/kontext/environment/PropertyNaming {
+	public static final field Companion Lcom/davils/kontext/environment/PropertyNaming$Companion;
+	public abstract fun nameOf-A2QouqI (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/davils/kontext/environment/PropertyNaming$Companion {
+	public final fun getUPPER_SNAKE ()Lcom/davils/kontext/environment/PropertyNaming;
+	public final fun prefixed (Ljava/lang/String;)Lcom/davils/kontext/environment/PropertyNaming;
+}
+

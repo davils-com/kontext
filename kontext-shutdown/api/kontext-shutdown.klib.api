@@ -1,0 +1,16 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-shutdown>
+final class com.davils.kontext.shutdown/ContainerCloseException : kotlin/IllegalStateException { // com.davils.kontext.shutdown/ContainerCloseException|null[0]
+    final val container // com.davils.kontext.shutdown/ContainerCloseException.container|{}container[0]
+        final fun <get-container>(): com.davils.kontext.core/ContainerName // com.davils.kontext.shutdown/ContainerCloseException.container.<get-container>|<get-container>(){}[0]
+    final val failures // com.davils.kontext.shutdown/ContainerCloseException.failures|{}failures[0]
+        final fun <get-failures>(): kotlin.collections/List<com.davils.kontext.core.container/DisposalFailure> // com.davils.kontext.shutdown/ContainerCloseException.failures.<get-failures>|<get-failures>(){}[0]
+}
+
+final fun (com.davils.knot.shutdown/Shutdown).com.davils.kontext.shutdown/adopt(com.davils.kontext.core/Container, com.davils.knot.shutdown/ShutdownPhase = ...): com.davils.knot.shutdown/ShutdownRegistration // com.davils.kontext.shutdown/adopt|adopt@com.davils.knot.shutdown.Shutdown(com.davils.kontext.core.Container;com.davils.knot.shutdown.ShutdownPhase){}[0]

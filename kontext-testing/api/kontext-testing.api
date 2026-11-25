@@ -1,0 +1,44 @@
+public final class com/davils/kontext/testing/FailingContainerSink : com/davils/kontext/core/observe/ContainerSink {
+	public fun <init> ()V
+	public fun record (Lcom/davils/kontext/core/observe/ContainerEvent;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/testing/RecordingContainerSink : com/davils/kontext/core/observe/ContainerSink {
+	public fun <init> ()V
+	public final fun clear ()V
+	public final fun getEvents ()Ljava/util/List;
+	public fun record (Lcom/davils/kontext/core/observe/ContainerEvent;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/testing/RecordingTextSink : com/davils/kontext/core/observe/TextSink {
+	public fun <init> ()V
+	public final fun at (Lcom/davils/kontext/core/observe/TextLevel;)Ljava/util/List;
+	public final fun getLines ()Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+	public fun write (Lcom/davils/kontext/core/observe/TextLevel;Ljava/lang/String;)V
+}
+
+public final class com/davils/kontext/testing/TestContainerBuilder {
+	public final fun add (Lcom/davils/kontext/core/Module;)V
+	public final fun configure (Lkotlin/jvm/functions/Function1;)V
+	public final fun modules ([Lcom/davils/kontext/core/Module;)V
+	public final fun nextName ()Ljava/lang/String;
+	public final fun replace ([Lcom/davils/kontext/core/Module;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/testing/TestContainersKt {
+	public static final fun testContainer-DgakQ2Q (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun testContainer-DgakQ2Q$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withTestContainer-1T6TwC0 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withTestContainer-1T6TwC0$default (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/davils/kontext/testing/TestProfiles {
+	public static final field INSTANCE Lcom/davils/kontext/testing/TestProfiles;
+	public final fun getLIVE-xuI1QKg ()Ljava/lang/String;
+	public final fun getMOCK-xuI1QKg ()Ljava/lang/String;
+}
+
