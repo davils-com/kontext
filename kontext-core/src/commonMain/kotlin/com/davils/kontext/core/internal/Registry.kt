@@ -33,6 +33,8 @@ internal class Registry(val declarations: List<Declaration>, scopeDeclarations: 
         declaration.keys.map { key -> Address(declaration.owner, DefinitionKey(key.type)) }
     }
 
+    private val held: Set<Declaration> = declarations.toHashSet()
+
     val parents: Map<ScopeKey, ScopeKey?> = scopeDeclarations.associate { scope -> scope.key to scope.within }
     val scopes: Set<ScopeKey> = parents.keys
     val eager: List<Declaration> = declarations.filter { declaration -> declaration.isEager }
@@ -46,6 +48,8 @@ internal class Registry(val declarations: List<Declaration>, scopeDeclarations: 
         if (declared != null) return Match.Found(declared)
         return matchOf(aliases[address].orEmpty())
     }
+
+    fun holds(declaration: Declaration): Boolean = declaration in held
 
     fun all(owner: ScopeKey?, type: KType): List<Declaration> = types[Address(owner, DefinitionKey(type))].orEmpty()
 

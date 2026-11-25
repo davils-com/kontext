@@ -224,9 +224,11 @@ public class Container internal constructor(private val runtime: ContainerRuntim
     /**
      * Closes the extensions, the child containers, the open scopes and the coroutine scope, and then every instance
      * with a close function, in the reverse order of creation. A failing close function does not stop the others;
-     * its failure is in the report.
+     * its failure is in the report. Closing runs to the end even when the calling coroutine is cancelled, and nothing
+     * is created in the container once its own instances start to close. A concurrent call waits until the first one
+     * has closed everything; a call from a close function of the same container returns at once.
      *
-     * @return the report, [CloseReport.AlreadyClosed] if the container was closed before.
+     * @return the report, [CloseReport.AlreadyClosed] if the container was closed or is closing.
      * @since 1.0.0
      */
     public suspend fun close(): CloseReport = runtime.close()

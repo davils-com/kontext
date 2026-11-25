@@ -19,6 +19,7 @@
 package com.davils.kontext.core.internal
 
 import com.davils.kontext.core.Container
+import com.davils.kontext.core.ContainerLimits
 import com.davils.kontext.core.ContainerName
 import com.davils.kontext.core.DefinitionContext
 import com.davils.kontext.core.DefinitionKey
@@ -43,6 +44,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -51,6 +53,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -59,12 +62,13 @@ import kotlin.time.TimeSource
 
 private const val START_SPAN: String = "kontext.start"
 private const val CLOSE_SPAN: String = "kontext.close"
+private const val UNNAMED_EXTENSION: String = "unnamed"
 
 internal class ContainerRuntime(val configuration: ContainerConfiguration) : Host(platformGuard()) {
     private val stateFlow = MutableStateFlow(ContainerState.Starting)
-    private val children = mutableListOf<ContainerRuntime>()
     private val closeHandlers = mutableListOf<() -> Unit>()
     private val ready = CompletableDeferred<Unit>()
+    private val closure = CompletableDeferred<Unit>()
 
     val loader: ModuleLoader = ModuleLoader(
         this,
@@ -76,6 +80,7 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
         ),
     )
     val scopes: ScopeTable = ScopeTable(this)
+    val children: Children = Children(this)
 
     val name: ContainerName get() = configuration.name
     val profile: Profile get() = configuration.profile
@@ -86,8 +91,8 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
     val properties: Properties = Properties(configuration.propertySources).layered(propertiesOf(parent))
     val state: StateFlow<ContainerState> = stateFlow.asStateFlow()
     val context: ResolutionContext =
-        ResolutionContext(runtime = this, scope = null, path = emptyList(), parameters = Parameters.EMPTY)
-    val registry: Registry get() = loader.registry
+        ResolutionContext(runtime = this, scope = null, trail = Trail.ROOT, parameters = Parameters.EMPTY)
+    override val registry: Registry get() = loader.registry
     val isResolvable: Boolean get() = stateFlow.value != ContainerState.Closed
     val isLoading: Boolean get() = !ready.isCompleted
     val facade: Container get() = Container(this)
@@ -103,8 +108,14 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
 
     suspend fun start(): ContainerRuntime {
         val mark = timeSource.markNow()
-        val started = attempted { telemetry.traced(START_SPAN) { createEager(registry.eager) } }
-        started.exceptionOrNull()?.let { failure -> abort(failure) }
+        var isStarted = false
+        try {
+            val started = attempted { telemetry.traced(START_SPAN) { createEager(registry.eager) } }
+            started.exceptionOrNull()?.let { failure -> abort(failure) }
+            isStarted = true
+        } finally {
+            if (!isStarted) withContext(NonCancellable) { rollBack() }
+        }
         stateFlow.value = ContainerState.Running
         loadLazily()
         notifyExtensions(ExtensionPhase.Started) { extension -> extension.onStarted(facade) }
@@ -147,46 +158,53 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
                 )
             }
         }
-        val instance = supplied.getOrElse { cause -> throw failed(ResolutionFailure.Failed(key, cause, path)) }
+        val instance = supplied.getOrElse { cause -> throw wrapped(key = key, cause = cause, path = path) }
         val isMismatched = instance != null && !fits(instance, key)
         if (isMismatched) throw failed(ResolutionFailure.Mismatched(key, path))
         return instance
     }
 
-    fun produce(
-        located: Located,
-        trail: List<DefinitionKey>,
-        parameters: Parameters,
-        create: DefinitionContext.() -> Any,
-    ): Any {
+    fun produce(located: Located, trail: Trail, parameters: Parameters, create: DefinitionContext.() -> Any): Any {
         val context = ResolutionContext(
             runtime = this,
             scope = located.host.scope,
-            path = trail,
+            trail = trail,
             parameters = parameters,
         )
         val mark = timeSource.markNow()
         val produced = contained { context.create() }
-        val instance = produced.getOrElse { cause -> throw wrapped(located.declaration.key, cause, trail.dropLast(1)) }
-        return registered(located, instance, mark)
+        val instance = produced.getOrElse { cause ->
+            throw wrapped(
+                located.declaration.key,
+                cause,
+                trail.keys.dropLast(1),
+            )
+        }
+        return registered(located = located, instance = instance, mark = mark, trail = trail)
     }
 
     suspend fun produceAsync(
         located: Located,
-        trail: List<DefinitionKey>,
+        trail: Trail,
         parameters: Parameters,
         create: suspend DefinitionContext.() -> Any,
     ): Any {
         val context = ResolutionContext(
             runtime = this,
             scope = located.host.scope,
-            path = trail,
+            trail = trail,
             parameters = parameters,
         )
         val mark = timeSource.markNow()
         val produced = attempted { context.create() }
-        val instance = produced.getOrElse { cause -> throw wrapped(located.declaration.key, cause, trail.dropLast(1)) }
-        return registered(located, instance, mark)
+        val instance = produced.getOrElse { cause ->
+            throw wrapped(
+                located.declaration.key,
+                cause,
+                trail.keys.dropLast(1),
+            )
+        }
+        return registered(located = located, instance = instance, mark = mark, trail = trail)
     }
 
     fun failed(failure: ResolutionFailure): ResolutionException {
@@ -199,15 +217,14 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
         val builder = ContainerBuilder(profile, this)
         builder.block()
         val child = ContainerRuntime(builder.build()).start()
-        val open = locked {
-            children += child
-            children.size
+        val open = children.adopt(child)
+        if (open == null) {
+            child.close()
+            throw ContainerClosedException(name)
         }
         telemetry.childOpened(child = child.name, open = open)
         return child
     }
-
-    fun childrenSnapshot(): List<ContainerRuntime> = locked { children.toList() }
 
     fun onClosed(handler: () -> Unit) {
         val isAlreadyClosed = locked {
@@ -220,24 +237,35 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
 
     suspend fun close(): CloseReport {
         val isClosing = stateFlow.compareAndSet(expect = ContainerState.Running, update = ContainerState.Closing)
-        if (!isClosing) return CloseReport.AlreadyClosed
-        telemetry.closing()
-        val mark = timeSource.markNow()
-        val failures = telemetry.traced(CLOSE_SPAN) { dispose() }
-        val handlers = locked {
-            stateFlow.value = ContainerState.Closed
-            closeHandlers.toList().also { closeHandlers.clear() }
-        }
-        telemetry.closed(failures = failures.size, elapsed = mark.elapsedNow())
-        parent?.release(this)
-        handlers.forEach { handler -> contained { handler() } }
-        return CloseReport.Closed(failures)
+        if (isClosing) return withContext(Closing.contextOf(this)) { closeNow() }
+        val isPending = stateFlow.value == ContainerState.Closing && !Closing.isWithin(this)
+        if (isPending) closure.await()
+        return CloseReport.AlreadyClosed
     }
 
-    private fun registered(located: Located, instance: Any, mark: ComparableTimeMark): Any {
+    private suspend fun closeNow(): CloseReport {
+        try {
+            telemetry.closing()
+            val mark = timeSource.markNow()
+            val failures = telemetry.traced(CLOSE_SPAN) { dispose() }
+            val handlers = locked {
+                stateFlow.value = ContainerState.Closed
+                closeHandlers.toList().also { closeHandlers.clear() }
+            }
+            telemetry.closed(failures = failures.size, elapsed = mark.elapsedNow())
+            parent?.released(this)
+            handlers.forEach { handler -> contained { handler() } }
+            return CloseReport.Closed(failures)
+        } finally {
+            closure.complete(Unit)
+        }
+    }
+
+    private fun registered(located: Located, instance: Any, mark: ComparableTimeMark, trail: Trail): Any {
         val declaration = located.declaration
+        val isRetained = located.host.retain(declaration, instance)
+        if (!isRetained) throw failed(ResolutionFailure.Closed(declaration.key, trail.keys.dropLast(1)))
         telemetry.created(key = declaration.key, lifetime = declaration.lifetime, elapsed = mark.elapsedNow())
-        declaration.dispose?.let { dispose -> located.host.disposals.add(declaration, instance) { dispose(instance) } }
         return instance
     }
 
@@ -246,23 +274,21 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
             declaration.production is Production.Async
         }
         blocking.forEach { declaration ->
-            locatedHere(
-                declaration,
-            ).instance(emptyList(), declaration.key, Parameters.EMPTY)
+            val located = Located(runtime = this, host = this, declaration = declaration)
+            located.instance(Trail.ROOT, declaration.key, Parameters.EMPTY)
         }
         coroutineScope {
             val creations = suspending.map { declaration ->
-                async { locatedHere(declaration).awaitInstance(emptyList(), declaration.key, Parameters.EMPTY) }
+                val located = Located(
+                    runtime = this@ContainerRuntime,
+                    host = this@ContainerRuntime,
+                    declaration = declaration,
+                )
+                async { located.awaitInstance(Trail.ROOT, declaration.key, Parameters.EMPTY) }
             }
             creations.awaitAll()
         }
     }
-
-    private fun locatedHere(declaration: Declaration): Located = Located(
-        runtime = this,
-        host = this,
-        declaration = declaration,
-    )
 
     private fun loadLazily() {
         val lazy = configuration.lazyModules
@@ -270,30 +296,43 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
             ready.complete(Unit)
             return
         }
-        coroutineScope.launch {
+        val loading = coroutineScope.launch {
             val loaded = attempted { loader.load(lazy.map { module -> module.build() }, isEager = false) }
             loaded.fold(
                 onSuccess = { ready.complete(Unit) },
                 onFailure = { failure -> ready.completeExceptionally(failure) },
             )
         }
+        loading.invokeOnCompletion { cause ->
+            if (cause != null) ready.completeExceptionally(ContainerClosedException(name))
+        }
     }
 
     private suspend fun abort(failure: Throwable): Nothing {
+        val failures = withContext(NonCancellable) { rollBack() }
+        failures.forEach { disposal -> failure.addSuppressed(disposal.cause) }
+        throw failure
+    }
+
+    private suspend fun rollBack(): List<DisposalFailure> {
+        if (stateFlow.value == ContainerState.Closed) return emptyList()
         stateFlow.value = ContainerState.Closing
+        seal()
         job.cancel()
-        disposals.drain().forEach { disposal -> failure.addSuppressed(disposal.cause) }
+        val failures = disposals.drain()
         stateFlow.value = ContainerState.Closed
         ready.completeExceptionally(ContainerClosedException(name))
-        throw failure
+        closure.complete(Unit)
+        return failures
     }
 
     private suspend fun dispose(): List<DisposalFailure> {
         notifyClosing()
-        val nested = locked { children.toList() }
+        val nested = children.snapshot()
         val opened = scopes.snapshot()
         val childFailures = nested.asReversed().flatMap { child -> child.close().failures }
         val scopeFailures = opened.asReversed().flatMap { scope -> scope.close().failures }
+        seal()
         job.cancel()
         ready.completeExceptionally(ContainerClosedException(name))
         return childFailures + scopeFailures + disposals.drain()
@@ -304,7 +343,7 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
             val outcome = attempted { extension.onClosing(facade) }
             if (outcome.isFailure) {
                 telemetry.extensionFailed(
-                    extension = extension.name,
+                    extension = nameOf(extension),
                     phase = ExtensionPhase.Closing.label,
                 )
             }
@@ -314,22 +353,23 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
     inline fun notifyExtensions(phase: ExtensionPhase, hook: (ContainerExtension) -> Unit) {
         configuration.extensions.forEach { extension ->
             val outcome = contained { hook(extension) }
-            if (outcome.isFailure) telemetry.extensionFailed(extension = extension.name, phase = phase.label)
+            if (outcome.isFailure) telemetry.extensionFailed(extension = nameOf(extension), phase = phase.label)
         }
     }
 
-    private fun release(child: ContainerRuntime) {
-        val open = locked {
-            children.remove(child)
-            children.size
-        }
-        telemetry.childClosed(open)
+    private fun released(child: ContainerRuntime) {
+        telemetry.childClosed(children.release(child))
     }
 
     fun ensureRunning() {
         if (stateFlow.value == ContainerState.Running) return
         throw ContainerClosedException(name)
     }
+}
+
+internal fun nameOf(extension: ContainerExtension): String {
+    val name = contained { extension.name }.getOrDefault(UNNAMED_EXTENSION)
+    return name.take(ContainerLimits.MAX_NAME_LENGTH)
 }
 
 private fun jobOf(runtime: ContainerRuntime?): Job? = runtime?.job

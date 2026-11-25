@@ -33,6 +33,7 @@ internal class ScopeTable(private val runtime: ContainerRuntime) {
         ensureOpenable(key)
         ensurePlaced(key = key, parent = parent, seeds = seeds)
         val opened = runtime.locked {
+            runtime.ensureRunning()
             ensureRoom(scopeId)
             val created = ScopeRuntime(
                 runtime = runtime,
@@ -46,7 +47,9 @@ internal class ScopeTable(private val runtime: ContainerRuntime) {
             scopeId?.let { id -> named[id] = created }
             created
         }
-        parent?.adopt(opened)
+        val isAdopted = parent?.adopt(opened) != false
+        if (!isAdopted) runtime.locked { forget(opened) }
+        check(isAdopted) { "A closed scope opens no scope" }
         runtime.telemetry.scopeOpened(scope = key, id = opened.id, open = open.size)
         return opened
     }
@@ -61,13 +64,24 @@ internal class ScopeTable(private val runtime: ContainerRuntime) {
 
     fun snapshot(): List<ScopeRuntime> = runtime.locked { open.toList() }
 
+    fun closing(scope: ScopeRuntime) {
+        runtime.locked { release(scope) }
+    }
+
     fun closed(scope: ScopeRuntime, failures: Int) {
-        val remaining = runtime.locked {
-            open.remove(scope)
-            scope.scopeId?.let { id -> named.remove(id) }
-            open.size
-        }
+        val remaining = runtime.locked { forget(scope) }
         runtime.telemetry.scopeClosed(scope = scope.key, id = scope.id, failures = failures, open = remaining)
+    }
+
+    private fun forget(scope: ScopeRuntime): Int {
+        open.remove(scope)
+        release(scope)
+        return open.size
+    }
+
+    private fun release(scope: ScopeRuntime) {
+        val id = scope.scopeId ?: return
+        if (named[id] === scope) named.remove(id)
     }
 
     private fun ensureOpenable(key: ScopeKey) {

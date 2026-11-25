@@ -21,7 +21,18 @@ import kotlin.concurrent.withLock
 
 internal actual fun platformGuard(): Guard {
     val lock = ReentrantLock()
+    val changed = lock.newCondition()
     return object : Guard {
         override fun <T> locked(block: () -> T): T = lock.withLock(block)
+
+        override fun await() {
+            changed.await()
+        }
+
+        override fun signalAll() {
+            changed.signalAll()
+        }
     }
 }
+
+internal actual fun currentWorker(): Any = Thread.currentThread()

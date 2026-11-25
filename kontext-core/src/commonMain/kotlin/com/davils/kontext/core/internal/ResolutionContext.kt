@@ -16,7 +16,6 @@
 
 package com.davils.kontext.core.internal
 
-import com.davils.kontext.core.ContainerLimits
 import com.davils.kontext.core.DefinitionContext
 import com.davils.kontext.core.DefinitionKey
 import com.davils.kontext.core.Resolver
@@ -28,7 +27,7 @@ import kotlin.reflect.KType
 internal class ResolutionContext(
     private val runtime: ContainerRuntime,
     private val scope: ScopeRuntime?,
-    private val path: List<DefinitionKey>,
+    private val trail: Trail,
     override val parameters: Parameters,
 ) : DefinitionContext() {
     override val coroutineScope: CoroutineScope get() = (scope ?: runtime).coroutineScope
@@ -38,14 +37,14 @@ internal class ResolutionContext(
 
     override fun resolveOrNull(key: DefinitionKey, parameters: Parameters): Any? {
         ensureResolvable(key)
-        val located = runtime.locate(scope = scope, key = key, path = path) ?: return fallback(key)
-        return located.instance(path = path, key = key, parameters = parameters)
+        val located = runtime.locate(scope = scope, key = key, path = trail.keys) ?: return fallback(key)
+        return located.instance(trail = trail, key = key, parameters = parameters)
     }
 
     override fun resolveAll(type: KType): List<Any> {
         ensureResolvable(DefinitionKey(type))
         val located = runtime.locateAll(scope, type)
-        return located.map { candidate -> candidate.instance(path, candidate.declaration.key, Parameters.EMPTY) }
+        return located.map { candidate -> candidate.instance(trail, candidate.declaration.key, Parameters.EMPTY) }
     }
 
     override suspend fun resolveAsync(key: DefinitionKey, parameters: Parameters): Any =
@@ -54,45 +53,53 @@ internal class ResolutionContext(
     override suspend fun resolveAsyncOrNull(key: DefinitionKey, parameters: Parameters): Any? {
         ensureResolvable(key)
         val located = locateWhenReady(key) ?: return fallback(key)
-        return located.awaitInstance(path = path, key = key, parameters = parameters)
+        return located.awaitInstance(trail = trail, key = key, parameters = parameters)
     }
 
     override suspend fun resolveAllAsync(type: KType): List<Any> {
         ensureResolvable(DefinitionKey(type))
         runtime.awaitLoaded()
         val located = runtime.locateAll(scope, type)
-        return located.map { candidate -> candidate.awaitInstance(path, candidate.declaration.key, Parameters.EMPTY) }
+        return located.map { candidate -> candidate.awaitInstance(trail, candidate.declaration.key, Parameters.EMPTY) }
     }
 
     override fun detached(): Resolver =
-        ResolutionContext(runtime = runtime, scope = scope, path = emptyList(), parameters = Parameters.EMPTY)
+        ResolutionContext(runtime = runtime, scope = scope, trail = trail.detached(), parameters = Parameters.EMPTY)
 
     override fun properties(): Properties = runtime.properties
 
     private suspend fun locateWhenReady(key: DefinitionKey): Located? {
-        val located = runtime.locate(scope = scope, key = key, path = path)
+        val located = runtime.locate(scope = scope, key = key, path = trail.keys)
         if (located != null || !runtime.isLoading) return located
         runtime.awaitLoaded()
-        return runtime.locate(scope = scope, key = key, path = path)
+        return runtime.locate(scope = scope, key = key, path = trail.keys)
     }
 
-    private fun fallback(key: DefinitionKey): Any? = runtime.fallback(key = key, resolver = detached(), path = path)
+    private fun fallback(key: DefinitionKey): Any? {
+        val resolver = ResolutionContext(
+            runtime = runtime,
+            scope = scope,
+            trail = trail + key,
+            parameters = Parameters.EMPTY,
+        )
+        return runtime.fallback(key = key, resolver = resolver, path = trail.keys)
+    }
 
     private fun absence(key: DefinitionKey): Throwable {
         val isLoading = runtime.isLoading
-        if (isLoading) return runtime.failed(ResolutionFailure.NotReady(key, path))
-        return runtime.failed(ResolutionFailure.Missing(key, path))
+        if (isLoading) return runtime.failed(ResolutionFailure.NotReady(key, trail.keys))
+        return runtime.failed(ResolutionFailure.Missing(key, trail.keys))
     }
 
     private fun ensureResolvable(key: DefinitionKey) {
         val isOpen = runtime.isResolvable && scope?.isOpen != false
-        if (!isOpen) throw runtime.failed(ResolutionFailure.Closed(key, path))
+        if (!isOpen) throw runtime.failed(ResolutionFailure.Closed(key, trail.keys))
         ensureAcyclic(key)
     }
 
     private fun ensureAcyclic(key: DefinitionKey) {
-        if (key in path) throw runtime.failed(ResolutionFailure.Circular(key, path))
-        if (path.size < ContainerLimits.MAX_RESOLUTION_DEPTH) return
-        throw runtime.failed(ResolutionFailure.TooDeep(key, path))
+        if (key in trail) throw runtime.failed(ResolutionFailure.Circular(key, trail.keys))
+        if (!trail.isExhausted) return
+        throw runtime.failed(ResolutionFailure.TooDeep(key, trail.keys))
     }
 }

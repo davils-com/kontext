@@ -18,6 +18,7 @@
 
 package com.davils.kontext.core.internal
 
+import com.davils.kollect.core.trace.Span
 import com.davils.kollect.core.trace.SpanOutcome
 import com.davils.konfetti.core.EventBus
 import com.davils.konfetti.core.Topic
@@ -54,6 +55,7 @@ internal class ContainerTelemetry(val configuration: ContainerConfiguration) {
         ContainerMeters(registry, container.value)
     }
     private val rejections = AtomicLong(0L)
+    private val reentry: Reentry = platformReentry()
 
     private val local: MutableSharedFlow<ContainerEvent> = MutableSharedFlow(
         extraBufferCapacity = EVENT_CAPACITY,
@@ -138,12 +140,24 @@ internal class ContainerTelemetry(val configuration: ContainerConfiguration) {
     }
 
     inline fun <T> traced(operation: String, block: () -> T): T {
-        val span = configuration.tracer.start(operation)
-        span.attribute(key = CONTAINER_ATTRIBUTE, value = container.value)
-        span.attribute(key = PROFILE_ATTRIBUTE, value = configuration.profile.value)
+        val span = spanOf(operation)
         val result = runCatching(block)
-        span.end(SpanOutcome.Ok.takeIf { result.isSuccess } ?: SpanOutcome.Error)
+        span?.let { started -> ended(started, SpanOutcome.Ok.takeIf { result.isSuccess } ?: SpanOutcome.Error) }
         return result.getOrThrow()
+    }
+
+    fun spanOf(operation: String): Span? {
+        val started = contained {
+            val span = configuration.tracer.start(operation)
+            span.attribute(key = CONTAINER_ATTRIBUTE, value = container.value)
+            span.attribute(key = PROFILE_ATTRIBUTE, value = configuration.profile.value)
+            span
+        }
+        return started.getOrNull()
+    }
+
+    fun ended(span: Span, outcome: SpanOutcome) {
+        contained { span.end(outcome) }
     }
 
     private inline fun emit(event: () -> ContainerEvent) {
@@ -157,7 +171,9 @@ internal class ContainerTelemetry(val configuration: ContainerConfiguration) {
     }
 
     private fun deliver(target: ContainerSink, event: ContainerEvent) {
-        contained { target.record(event) }.onFailure { reject() }
+        val delivered = reentry.outermost { contained { target.record(event) } }
+        val isDelivered = delivered?.isSuccess == true
+        if (!isDelivered) reject()
     }
 
     private fun publish(target: Topic<ContainerEvent>, event: ContainerEvent) {

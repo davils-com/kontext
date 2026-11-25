@@ -36,9 +36,14 @@ standard stream; everything it reports goes to a sink, a meter registry, a trace
 
 Every module is a Kotlin Multiplatform library with two targets, `jvm` and `wasmJs`. The Wasm tests run under Node.js.
 
-- Code lives in `src/commonMain/kotlin`. The only platform difference is the lock that makes a container thread-safe:
-  `internal expect fun platformGuard()` in `Guard.kt`, a `ReentrantLock` in `Guard.jvm.kt` and nothing in
-  `Guard.wasmJs.kt`, where there is one thread.
+- Code lives in `src/commonMain/kotlin`. The only platform differences are what makes a container thread-safe:
+  `platformGuard()` and `currentWorker()` in `Guard.kt`, a `ReentrantLock` with a condition and the current thread in
+  `Guard.jvm.kt`, and `platformReentry()` in `Reentry.kt`, a thread-local flag in `Reentry.jvm.kt`; the Wasm actuals
+  do nothing, because there is one thread.
+- A host never holds its lock while caller code runs: a single is claimed for one worker, created outside the lock
+  and stored afterwards; another worker waits for the claim, and a worker that would wait on itself, directly or
+  through other waiting workers, fails with `Circular`. A closing host is sealed before its close functions run and
+  refuses every later creation.
 - Resolution is not suspending, so that a factory can resolve; starting, closing and opening a child are.
 
 ## Verify

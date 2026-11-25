@@ -24,7 +24,8 @@ import kotlin.time.Duration
  * When a resolution finds an instance its retention no longer keeps, the container creates a new one and closes the
  * old one with the close function of the definition, asynchronously in the coroutine scope of its holder. A holder
  * of the old instance therefore must not keep it beyond the retention. [keeps] runs under the lock of the holder and
- * must return quickly; a retention that throws keeps the instance.
+ * must return quickly; a retention that throws replaces the instance, so that a broken retention never keeps an
+ * expired credential.
  *
  * @since 1.0.0
  */

@@ -134,9 +134,11 @@ public class Scope internal constructor(private val runtime: ScopeRuntime) : Res
 
     /**
      * Closes the scopes opened within this one, cancels its coroutine scope and then closes its instances with a
-     * close function, in the reverse order of creation.
+     * close function, in the reverse order of creation. Closing runs to the end even when the calling coroutine is
+     * cancelled, and nothing is created in the scope once it closes. A concurrent call waits until the first one has
+     * closed everything; a call from a close function of the same scope returns at once.
      *
-     * @return the report, [CloseReport.AlreadyClosed] if the scope was closed before.
+     * @return the report, [CloseReport.AlreadyClosed] if the scope was closed or is closing.
      * @since 1.0.0
      */
     public suspend fun close(): CloseReport = runtime.close()

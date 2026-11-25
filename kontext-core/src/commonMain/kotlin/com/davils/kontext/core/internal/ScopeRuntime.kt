@@ -28,9 +28,11 @@ import com.davils.kontext.core.error.ScopeSeedException
 import com.davils.kontext.core.parameter.Parameters
 import com.davils.kore.core.failure.contained
 import com.davils.kore.core.identity.UuidV7
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.TimeSource
@@ -49,6 +51,7 @@ internal class ScopeRuntime(
     private val linkedBy = mutableListOf<ScopeRuntime>()
     private val provided = seeds.toMutableMap()
     private val closeHandlers = mutableListOf<() -> Unit>()
+    private val closure = CompletableDeferred<Unit>()
     val job: CompletableJob = SupervisorJob(parentJob(parent) ?: runtime.job)
 
     override val scope: ScopeRuntime get() = this
@@ -57,10 +60,12 @@ internal class ScopeRuntime(
 
     override val timeSource: TimeSource.WithComparableMarks get() = runtime.configuration.timeSource
 
+    override val registry: Registry get() = runtime.registry
+
     val isOpen: Boolean get() = open.load()
 
     val context: ResolutionContext =
-        ResolutionContext(runtime = runtime, scope = this, path = emptyList(), parameters = Parameters.EMPTY)
+        ResolutionContext(runtime = runtime, scope = this, trail = Trail.ROOT, parameters = Parameters.EMPTY)
 
     val chain: List<ScopeRuntime> get() = generateSequence(this) { scope -> scope.parent }.toList()
 
@@ -79,8 +84,9 @@ internal class ScopeRuntime(
     fun openScope(key: ScopeKey, scopeId: ScopeId?, seeds: Map<DefinitionKey, Any>): ScopeRuntime =
         runtime.scopes.open(key = key, parent = this, seeds = seeds, scopeId = scopeId)
 
-    fun adopt(child: ScopeRuntime) {
-        locked { nested += child }
+    fun adopt(child: ScopeRuntime): Boolean = locked {
+        if (isOpen) nested += child
+        isOpen
     }
 
     fun declare(key: DefinitionKey, instance: Any) {
@@ -96,7 +102,9 @@ internal class ScopeRuntime(
 
     fun link(other: ScopeRuntime) {
         require(other.runtime === runtime && other !== this) { "A scope links only to another scope of its container" }
+        check(other.isOpen) { "A scope links only to an open scope" }
         val isLinked = locked {
+            check(isOpen) { "A closed scope links to no scope" }
             require(links.size < ContainerLimits.MAX_LINKS) { "A scope links to at most ${ContainerLimits.MAX_LINKS}" }
             other !in links && links.add(other)
         }
@@ -119,19 +127,31 @@ internal class ScopeRuntime(
     }
 
     suspend fun close(): CloseReport {
-        if (!open.compareAndSet(expectedValue = true, newValue = false)) return CloseReport.AlreadyClosed
-        return CloseReport.Closed(dispose())
+        if (!open.compareAndSet(expectedValue = true, newValue = false)) return awaitClosed()
+        return withContext(Closing.contextOf(this)) { CloseReport.Closed(dispose()) }
+    }
+
+    private suspend fun awaitClosed(): CloseReport {
+        if (!Closing.isWithin(this)) closure.await()
+        return CloseReport.AlreadyClosed
     }
 
     private suspend fun dispose(): List<DisposalFailure> {
-        val children = locked { nested.toList().also { nested.clear() } }
-        val childFailures = children.asReversed().flatMap { child -> child.close().failures }
-        job.cancel()
-        val failures = childFailures + disposals.drain()
-        detach()
-        val handlers = locked { closeHandlers.toList().also { closeHandlers.clear() } }
-        handlers.forEach { handler -> contained { handler() } }
-        runtime.scopes.closed(this, failures.size)
+        var failures = emptyList<DisposalFailure>()
+        try {
+            runtime.scopes.closing(this)
+            val children = locked { nested.toList().also { nested.clear() } }
+            val childFailures = children.asReversed().flatMap { child -> child.close().failures }
+            seal()
+            job.cancel()
+            failures = childFailures + disposals.drain()
+        } finally {
+            detach()
+            val handlers = locked { closeHandlers.toList().also { closeHandlers.clear() } }
+            handlers.forEach { handler -> contained { handler() } }
+            runtime.scopes.closed(this, failures.size)
+            closure.complete(Unit)
+        }
         return failures
     }
 
@@ -144,8 +164,14 @@ internal class ScopeRuntime(
     }
 
     private fun collectInto(visited: MutableSet<ScopeRuntime>) {
-        val fresh = chain.filter { scope -> visited.add(scope) }
-        fresh.forEach { scope -> scope.locked { scope.links.toList() }.forEach { link -> link.collectInto(visited) } }
+        val pending = ArrayDeque<ScopeRuntime>()
+        pending.addLast(this)
+        while (pending.isNotEmpty()) {
+            val next = pending.removeLast()
+            val fresh = next.chain.filter { scope -> visited.add(scope) }
+            val linked = fresh.flatMap { scope -> scope.locked { scope.links.toList() } }
+            linked.asReversed().forEach { link -> pending.addLast(link) }
+        }
     }
 }
 

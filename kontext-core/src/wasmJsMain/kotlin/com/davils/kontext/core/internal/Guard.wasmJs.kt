@@ -16,6 +16,14 @@
 
 package com.davils.kontext.core.internal
 
+private val worker: Any = Any()
+
 internal actual fun platformGuard(): Guard = object : Guard {
     override fun <T> locked(block: () -> T): T = block()
+
+    override fun await(): Unit = throw IllegalStateException("A single thread never waits for another")
+
+    override fun signalAll() = Unit
 }
+
+internal actual fun currentWorker(): Any = worker

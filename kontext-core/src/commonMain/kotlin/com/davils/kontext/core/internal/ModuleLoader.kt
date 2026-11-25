@@ -25,8 +25,10 @@ import com.davils.kontext.core.definition.Declaration
 import com.davils.kontext.core.definition.Lifetime
 import com.davils.kontext.core.flatten
 import com.davils.kore.core.failure.attempted
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
@@ -68,7 +70,7 @@ internal class ModuleLoader(private val runtime: ContainerRuntime, private val i
             isFound
         }
         if (!isRemoved) return CloseReport.AlreadyClosed
-        val failures = released(installation)
+        val failures = withContext(NonCancellable) { released(installation) }
         runtime.telemetry.modulesUnloaded(installation.modules.map { module -> module.name })
         runtime.notifyExtensions(ExtensionPhase.Unloaded) { extension ->
             extension.onModulesUnloaded(runtime.facade, installation.modules)
@@ -97,7 +99,7 @@ internal class ModuleLoader(private val runtime: ContainerRuntime, private val i
             scopes = (installations + installation).flatMap { entry -> entry.scopes },
             effective = installed + declared,
             parent = runtime.parent,
-            children = runtime.childrenSnapshot(),
+            children = runtime.children.snapshot(),
         )
         LoadBuilder(input).build()
         installations += installation

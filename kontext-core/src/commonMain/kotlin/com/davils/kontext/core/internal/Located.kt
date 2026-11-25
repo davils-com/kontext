@@ -27,63 +27,68 @@ import com.davils.kontext.core.parameter.Parameters
 internal class Located(val runtime: ContainerRuntime, val host: Host, val declaration: Declaration) {
     private val isFactory: Boolean get() = declaration.lifetime == Lifetime.Factory
 
-    fun instance(path: List<DefinitionKey>, key: DefinitionKey, parameters: Parameters): Any =
+    fun instance(trail: Trail, key: DefinitionKey, parameters: Parameters): Any =
         when (val production = declaration.production) {
-            Production.Provided -> provided(path, key)
-            is Production.Sync -> created(path = path, key = key, parameters = parameters, create = production.create)
-            is Production.Async -> host.existing(declaration).takeUnless { isFactory } ?: suspending(path, key)
+            Production.Provided -> provided(trail, key)
+            is Production.Sync -> created(trail = trail, key = key, parameters = parameters, create = production.create)
+            is Production.Async -> host.existing(declaration).takeUnless { isFactory } ?: suspending(trail, key)
         }
 
-    suspend fun awaitInstance(path: List<DefinitionKey>, key: DefinitionKey, parameters: Parameters): Any {
+    suspend fun awaitInstance(trail: Trail, key: DefinitionKey, parameters: Parameters): Any {
         val production = declaration.production
-        if (production !is Production.Async) return instance(path, key, parameters)
-        return awaited(path = path, key = key, parameters = parameters, create = production.create)
+        if (production !is Production.Async) return instance(trail, key, parameters)
+        return awaited(trail = trail, key = key, parameters = parameters, create = production.create)
     }
 
     private fun created(
-        path: List<DefinitionKey>,
+        trail: Trail,
         key: DefinitionKey,
         parameters: Parameters,
         create: DefinitionContext.() -> Any,
     ): Any {
-        val trail = path + key
-        if (isFactory) return runtime.produce(located = this, trail = trail, parameters = parameters, create = create)
-        ensureUnparameterized(path, key, parameters)
-        return host.memoized(declaration) {
-            runtime.produce(located = this, trail = trail, parameters = Parameters.EMPTY, create = create)
+        val next = trail + key
+        if (isFactory) return runtime.produce(located = this, trail = next, parameters = parameters, create = create)
+        ensureUnparameterized(trail, key, parameters)
+        val memo = host.memoized(declaration) {
+            runtime.produce(located = this, trail = next, parameters = Parameters.EMPTY, create = create)
+        }
+        return when (memo) {
+            is Memo.Ready -> memo.instance
+            Memo.Refused -> throw runtime.failed(ResolutionFailure.Closed(key, trail.keys))
+            Memo.Reentered -> throw runtime.failed(ResolutionFailure.Circular(key, trail.keys))
         }
     }
 
     private suspend fun awaited(
-        path: List<DefinitionKey>,
+        trail: Trail,
         key: DefinitionKey,
         parameters: Parameters,
         create: suspend DefinitionContext.() -> Any,
     ): Any {
-        val trail = path + key
+        val next = trail + key
         if (isFactory) {
             return runtime.produceAsync(
                 located = this,
-                trail = trail,
+                trail = next,
                 parameters = parameters,
                 create = create,
             )
         }
-        ensureUnparameterized(path, key, parameters)
+        ensureUnparameterized(trail, key, parameters)
         val instance = host.memoizedAsync(declaration) {
-            runtime.produceAsync(located = this, trail = trail, parameters = Parameters.EMPTY, create = create)
+            runtime.produceAsync(located = this, trail = next, parameters = Parameters.EMPTY, create = create)
         }
-        return instance ?: throw runtime.failed(ResolutionFailure.Closed(key, path))
+        return instance ?: throw runtime.failed(ResolutionFailure.Closed(key, trail.keys))
     }
 
-    private fun ensureUnparameterized(path: List<DefinitionKey>, key: DefinitionKey, parameters: Parameters) {
+    private fun ensureUnparameterized(trail: Trail, key: DefinitionKey, parameters: Parameters) {
         if (parameters.isEmpty) return
-        throw runtime.failed(ResolutionFailure.ParametersRefused(key, path))
+        throw runtime.failed(ResolutionFailure.ParametersRefused(key, trail.keys))
     }
 
-    private fun provided(path: List<DefinitionKey>, key: DefinitionKey): Any =
-        host.seed(declaration.key) ?: throw runtime.failed(ResolutionFailure.Unprovided(key, path))
+    private fun provided(trail: Trail, key: DefinitionKey): Any =
+        host.seed(declaration.key) ?: throw runtime.failed(ResolutionFailure.Unprovided(key, trail.keys))
 
-    private fun suspending(path: List<DefinitionKey>, key: DefinitionKey): Nothing =
-        throw runtime.failed(ResolutionFailure.Suspending(key, path))
+    private fun suspending(trail: Trail, key: DefinitionKey): Nothing =
+        throw runtime.failed(ResolutionFailure.Suspending(key, trail.keys))
 }

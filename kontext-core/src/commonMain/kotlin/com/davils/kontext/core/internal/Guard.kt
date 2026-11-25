@@ -18,6 +18,12 @@ package com.davils.kontext.core.internal
 
 internal interface Guard {
     fun <T> locked(block: () -> T): T
+
+    fun await()
+
+    fun signalAll()
 }
 
 internal expect fun platformGuard(): Guard
+
+internal expect fun currentWorker(): Any
