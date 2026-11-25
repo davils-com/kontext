@@ -89,7 +89,10 @@ public class ContainerBuilder internal constructor(
     public var tracer: Tracer = inheritedOr(Tracer.None) { tracer }
 
     /**
-     * Where the container records its meters, `null` for none.
+     * Where the container records its meters, `null` for none. The name of the container is the `container` label of
+     * every meter, so containers sharing a registry need names of their own, and a name per tenant or request would
+     * let the series grow with them; give children few, fixed names. The series of a closed container stay in the
+     * registry.
      *
      * @since 1.0.0
      */
