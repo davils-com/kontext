@@ -13,6 +13,7 @@ published under the [Apache License 2.0](LICENSE).
 | `kontext-core` | `com.davils:kontext-core` | Modules, containers, scopes, child containers, profiles, parameters, properties, coroutines, verification, telemetry, Java interop |
 | `kontext-environment` | `com.davils:kontext-environment` | Properties from the environment variables of [Knot](https://github.com/davils-com/knot) |
 | `kontext-shutdown` | `com.davils:kontext-shutdown` | Closing a container in its phase of a shutdown of Knot |
+| `kontext-kaml` | `com.davils:kontext-kaml` | Properties from YAML text the application supplies, parsed by [kaml](https://github.com/davils-com/kaml) |
 | `kontext-testing` | `com.davils:kontext-testing` | Test containers, declared fakes, recording and failing sinks |
 | `kontext-bom` | `com.davils:kontext-bom` | The bill of materials of every module |
 
@@ -39,7 +40,7 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation(platform("com.davils:kontext-bom:1.0.0"))
+    implementation(platform("com.davils:kontext-bom:1.1.0"))
     implementation("com.davils:kontext-core")
     testImplementation("com.davils:kontext-testing")
 }

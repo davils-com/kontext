@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0 - 2026-11-26
+
+### Added
+
+- **`kontext-kaml`, properties from YAML.** `YamlPropertySource.parse(text)` and `properties { yaml(text) }` read the
+  single document of a YAML text the application supplies, parsed by kaml within its limits, with nested mappings as
+  dotted keys; a sequence, a key that is no property key or a document kaml refuses is refused at once.
+
+### Changed
+
+- **Built with Kreate 5.5.2 and Gradle 9.9.2 on Kore 2.5.0, konfetti 1.1.0, kollect 1.1.0 and Knot 1.2.0**, with the
+  version floors of the build tools raised.
+
 ## 1.0.0 - 2026-11-25
 
 The first version of Kontext: the dependency injection of kide as an open source library under the Apache License
