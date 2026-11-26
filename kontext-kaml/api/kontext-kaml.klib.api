@@ -1,0 +1,21 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-kaml>
+final class com.davils.kontext.kaml/YamlPropertySource : com.davils.kontext.core.property/PropertySource { // com.davils.kontext.kaml/YamlPropertySource|null[0]
+    final val size // com.davils.kontext.kaml/YamlPropertySource.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.davils.kontext.kaml/YamlPropertySource.size.<get-size>|<get-size>(){}[0]
+
+    final fun toString(): kotlin/String // com.davils.kontext.kaml/YamlPropertySource.toString|toString(){}[0]
+    final fun valueOf(com.davils.kontext.core.property/PropertyKey): kotlin/String? // com.davils.kontext.kaml/YamlPropertySource.valueOf|valueOf(com.davils.kontext.core.property.PropertyKey){}[0]
+
+    final object Companion { // com.davils.kontext.kaml/YamlPropertySource.Companion|null[0]
+        final fun parse(kotlin/String, com.davils.kaml.core/Yaml = ...): com.davils.kontext.kaml/YamlPropertySource // com.davils.kontext.kaml/YamlPropertySource.Companion.parse|parse(kotlin.String;com.davils.kaml.core.Yaml){}[0]
+    }
+}
+
+final fun (com.davils.kontext.core.property/PropertiesBuilder).com.davils.kontext.kaml/yaml(kotlin/String, com.davils.kaml.core/Yaml = ...) // com.davils.kontext.kaml/yaml|yaml@com.davils.kontext.core.property.PropertiesBuilder(kotlin.String;com.davils.kaml.core.Yaml){}[0]

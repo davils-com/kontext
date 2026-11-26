@@ -1,0 +1,17 @@
+public final class com/davils/kontext/kaml/YamlPropertiesKt {
+	public static final fun yaml (Lcom/davils/kontext/core/property/PropertiesBuilder;Ljava/lang/String;Lcom/davils/kaml/core/Yaml;)V
+	public static synthetic fun yaml$default (Lcom/davils/kontext/core/property/PropertiesBuilder;Ljava/lang/String;Lcom/davils/kaml/core/Yaml;ILjava/lang/Object;)V
+}
+
+public final class com/davils/kontext/kaml/YamlPropertySource : com/davils/kontext/core/property/PropertySource {
+	public static final field Companion Lcom/davils/kontext/kaml/YamlPropertySource$Companion;
+	public final fun getSize ()I
+	public fun toString ()Ljava/lang/String;
+	public fun valueOf-A2QouqI (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/davils/kontext/kaml/YamlPropertySource$Companion {
+	public final fun parse (Ljava/lang/String;Lcom/davils/kaml/core/Yaml;)Lcom/davils/kontext/kaml/YamlPropertySource;
+	public static synthetic fun parse$default (Lcom/davils/kontext/kaml/YamlPropertySource$Companion;Ljava/lang/String;Lcom/davils/kaml/core/Yaml;ILjava/lang/Object;)Lcom/davils/kontext/kaml/YamlPropertySource;
+}
+

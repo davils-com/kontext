@@ -27,16 +27,19 @@ check:
       - ":kontext-core:clean"
       - ":kontext-environment:clean"
       - ":kontext-shutdown:clean"
+      - ":kontext-kaml:clean"
       - ":kontext-testing:clean"
     tasks:
       - ":kontext-core:jvmJar"
       - ":kontext-environment:jvmJar"
       - ":kontext-shutdown:jvmJar"
+      - ":kontext-kaml:jvmJar"
       - ":kontext-testing:jvmJar"
     artifacts:
       - "kontext-core/build/libs/*.jar"
       - "kontext-environment/build/libs/*.jar"
       - "kontext-shutdown/build/libs/*.jar"
+      - "kontext-kaml/build/libs/*.jar"
       - "kontext-testing/build/libs/*.jar"
 
 policy:
@@ -67,6 +70,7 @@ publish:
     - ":kontext-core:publishAllPublicationsToDavilsRepository"
     - ":kontext-environment:publishAllPublicationsToDavilsRepository"
     - ":kontext-shutdown:publishAllPublicationsToDavilsRepository"
+    - ":kontext-kaml:publishAllPublicationsToDavilsRepository"
     - ":kontext-testing:publishAllPublicationsToDavilsRepository"
     - ":kontext-bom:publishAllPublicationsToDavilsRepository"
 
@@ -106,6 +110,15 @@ release:
       - path: com/davils/kontext-shutdown
         artifact: kontext-shutdown
         task: ":kontext-shutdown:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-kaml-jvm
+        artifact: kontext-kaml-jvm
+        task: ":kontext-kaml:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-kaml-wasm-js
+        artifact: kontext-kaml-wasm-js
+        task: ":kontext-kaml:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-kaml
+        artifact: kontext-kaml
+        task: ":kontext-kaml:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kontext-testing-jvm
         artifact: kontext-testing-jvm
         task: ":kontext-testing:publishJvmPublicationToDavilsRepository"
@@ -125,7 +138,9 @@ release:
       - "kontext-environment/build/libs/*.jar"
       - "kontext-environment/build/libs/*.klib"
       - "kontext-shutdown/build/libs/*.jar"
+      - "kontext-kaml/build/libs/*.jar"
       - "kontext-shutdown/build/libs/*.klib"
+      - "kontext-kaml/build/libs/*.klib"
       - "kontext-testing/build/libs/*.jar"
       - "kontext-testing/build/libs/*.klib"
   github-release:

@@ -128,6 +128,7 @@ rootProject.name = "kontext"
 include(":kontext-core")
 include(":kontext-environment")
 include(":kontext-shutdown")
+include(":kontext-kaml")
 include(":kontext-testing")
 include(":kontext-bom")
 include(":kontext-benchmark")
