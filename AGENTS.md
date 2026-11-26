@@ -13,6 +13,7 @@ rules of Kore and is published under the Apache License 2.0, with security first
 | `kontext-core` | `com.davils:kontext-core` | Modules and their DSL (lambda and constructor definitions, suspending definitions, variants, lazy modules), containers, scopes with ids and links, child containers, typed parameters, properties, dynamic loading, holders, components, extensions, fallbacks, retention, validation, verification, the sinks and the meters, spans, health and events of a container, and Java interop on the JVM |
 | `kontext-environment` | `com.davils:kontext-environment` | A `PropertySource` over the environment variables of Knot |
 | `kontext-shutdown` | `com.davils:kontext-shutdown` | `Shutdown.adopt`, which closes a container in its phase of a shutdown of [Knot](https://github.com/davils-com/knot) |
+| `kontext-kaml` | `com.davils:kontext-kaml` | `YamlPropertySource` and `PropertiesBuilder.yaml`, properties from YAML text the application supplies, parsed by [kaml](https://github.com/davils-com/kaml) within its limits |
 | `kontext-testing` | `com.davils:kontext-testing` | `testContainer` with replaced modules, the test profiles and recording and failing sinks |
 | `kontext-bom` | `com.davils:kontext-bom` | The bill of materials of every module |
 | `kontext-benchmark` | - | JMH throughput benchmarks of resolution, never published |
@@ -191,7 +192,7 @@ Kontext is built so that a mistake of a caller fails closed.
   ./gradlew --write-verification-metadata pgp,sha256 --export-keys --no-configuration-cache check
   ```
 
-- Kontext builds only with released versions of Kreate and Kore. `gradle/verification-metadata.xml` trusts
+- Kontext builds only with released versions of Kreate and of the Davils libraries it uses. `gradle/verification-metadata.xml` trusts
   `com.davils` artifacts only by the signature of the Davils release key `36F578E8AD2D4391E0FA6C18154C625FAD370063`;
   a snapshot is never put into the catalog, and no trust rule for unsigned snapshots is ever added.
 - A finding of the assurance gate that is a known, harmless property of a dependency gets an `ignore` rule in
