@@ -2,13 +2,13 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 # To regenerate this file, run: ./gradlew :kontext-benchmark:dependencies --write-locks
-com.davils:kollect-core-jvm:1.0.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:kollect-core:1.0.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:konfetti-core-jvm:1.0.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:konfetti-core:1.0.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:kore-core-jvm:2.3.2=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:kore-core:2.3.2=benchmarksCompileClasspath,benchmarksRuntimeClasspath
-com.davils:kreate-detekt-rules:5.4.1=detektPlugins
+com.davils:kollect-core-jvm:1.1.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:kollect-core:1.1.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:konfetti-core-jvm:1.1.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:konfetti-core:1.1.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:kore-core-jvm:2.5.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:kore-core:2.5.0=benchmarksCompileClasspath,benchmarksRuntimeClasspath
+com.davils:kreate-detekt-rules:5.5.2=detektPlugins
 com.github.ben-manes.caffeine:caffeine:2.9.3=detekt
 com.google.devtools.ksp:symbol-processing-aa-embeddable:2.3.11=benchmarkGenerator.resolver
 com.google.devtools.ksp:symbol-processing-api:2.3.11=benchmarkGenerator.resolver
