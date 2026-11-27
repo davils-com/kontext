@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0 - 2026-11-27
+
+### Added
+
+- **Kontext builds on kontinuity and Konnect directly.** `kontext-core` depends on `kontinuity-retry` and
+  `konnect-internet-protocol`, so resilience and the network types of Davils are part of every container, not an
+  extra module.
+- **A suspending creation that throws is tried again.** `ContainerBuilder.creationRetry` starts as
+  `DEFAULT_CREATION_RETRY`, three attempts with an exponential backoff from 100 milliseconds to 2 seconds and a
+  proportional jitter, and is inherited by a child: a suspending single that connects to a service which starts with
+  the application waits for it instead of failing the container. The errors of Kontext itself, such as a missing
+  definition, are never tried again, an instance created while the container closes is still closed, and
+  `creationRetry = null` creates once.
+- **The environment of kontinuity of a container.** `Resolver.resilience()` and `ContainerConfiguration.resilience`
+  report to the tracer, the meters and the event bus of the container and measure time on its time source, so a retry,
+  a circuit breaker or a cache a definition builds reports next to the container.
+- **Network properties.** `port`, `portOrNull`, `portRange`, `ipAddress`, `ipAddressOrNull` and `ipNetwork` read a
+  property as a `Port`, `PortRange`, `IpAddress` or `IpNetwork` of Konnect, with the constant reasons of its
+  converters, which never show the value.
+
+### Changed
+
+- **Built on kontinuity 1.2.0 and Konnect 1.2.0.**
+
 ## 1.1.0 - 2026-11-26
 
 ### Added

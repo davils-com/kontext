@@ -40,7 +40,7 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation(platform("com.davils:kontext-bom:1.1.0"))
+    implementation(platform("com.davils:kontext-bom:1.2.0"))
     implementation("com.davils:kontext-core")
     testImplementation("com.davils:kontext-testing")
 }

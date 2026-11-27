@@ -72,7 +72,7 @@ own `gradle/verification-metadata.xml`. A release also carries a signed build pr
 GitHub Actions run that built it:
 
 ```bash
-gh attestation verify kontext-core-jvm-1.1.0.jar --repo davils-com/kontext --signer-repo davils-com/kotlin-workflow
+gh attestation verify kontext-core-jvm-1.2.0.jar --repo davils-com/kontext --signer-repo davils-com/kotlin-workflow
 ```
 
 Snapshots in `https://repo.davils.com/snapshots` are neither signed nor attested and are not meant for production.
