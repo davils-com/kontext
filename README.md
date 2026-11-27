@@ -14,6 +14,9 @@ published under the [Apache License 2.0](LICENSE).
 | `kontext-environment` | `com.davils:kontext-environment` | Properties from the environment variables of [Knot](https://github.com/davils-com/knot) |
 | `kontext-shutdown` | `com.davils:kontext-shutdown` | Closing a container in its phase of a shutdown of Knot |
 | `kontext-kaml` | `com.davils:kontext-kaml` | Properties from YAML text the application supplies, parsed by [kaml](https://github.com/davils-com/kaml) |
+| `kontext-krypt` | `com.davils:kontext-krypt` | The environment of [krypt](https://github.com/davils-com/krypt) as a single and properties read as secrets |
+| `kontext-kheck` | `com.davils:kontext-kheck` | A logging of [kheck](https://github.com/davils-com/kheck) closed with the container, and its loggers by name |
+| `kontext-failure` | `com.davils:kontext-failure` | The failure handler of Knot as a single, drained in a shutdown of Knot next to the container |
 | `kontext-testing` | `com.davils:kontext-testing` | Test containers, declared fakes, recording and failing sinks |
 | `kontext-bom` | `com.davils:kontext-bom` | The bill of materials of every module |
 
@@ -164,6 +167,31 @@ Container container = JavaModules.start(Profile.Companion.getDEFAULT(), builder 
 Service service = JavaResolvers.get(container, Service.class);
 JavaModules.close(container);
 ```
+
+## Davils libraries
+
+```kotlin
+val platform = module("app.platform") {
+    single { shutdown(applicationScope) }
+    cryptoEnvironment { policy = CryptoPolicy.Cnsa2 }
+    logging { console { } }
+    failures { sinks { sink("disk", diskSink) } }
+    single { Database(property("db.url"), secret("db.password")) }
+}
+
+shutdown.adoptFailures(container)
+shutdown.adopt(container)
+val log = container.logger("app.payments")
+```
+
+- **`kontext-krypt`:** `cryptoEnvironment` declares the `Environment` of krypt with the tracer, the meters and the
+  event bus of the container; `secret` and `secretOrNull` read a property as a `SecretText` that never shows its
+  value.
+- **`kontext-kheck`:** `logging` declares a `Logging` on the time source and the event bus of the container, which
+  the container flushes and closes within a timeout; `logger(name)` and `logger<T>()` resolve its loggers.
+- **`kontext-failure`:** `failures` declares the `FailureHandler` of Knot with the telemetry of the container and the
+  `Shutdown` it declares as the target of a fatal failure; `Shutdown.adoptFailures` drains it in the drain phase,
+  next to `Shutdown.adopt` of `kontext-shutdown`.
 
 ## Benchmarks
 

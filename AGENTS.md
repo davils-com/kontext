@@ -14,6 +14,9 @@ rules of Kore and is published under the Apache License 2.0, with security first
 | `kontext-environment` | `com.davils:kontext-environment` | A `PropertySource` over the environment variables of Knot |
 | `kontext-shutdown` | `com.davils:kontext-shutdown` | `Shutdown.adopt`, which closes a container in its phase of a shutdown of [Knot](https://github.com/davils-com/knot) |
 | `kontext-kaml` | `com.davils:kontext-kaml` | `YamlPropertySource` and `PropertiesBuilder.yaml`, properties from YAML text the application supplies, parsed by [kaml](https://github.com/davils-com/kaml) within its limits |
+| `kontext-krypt` | `com.davils:kontext-krypt` | `ModuleBuilder.cryptoEnvironment`, the environment of [krypt](https://github.com/davils-com/krypt) as a single with the telemetry of the container, and `Resolver.secret` and `secretOrNull`, properties read as a `SecretText` |
+| `kontext-kheck` | `com.davils:kontext-kheck` | `ModuleBuilder.logging`, a logging of [kheck](https://github.com/davils-com/kheck) on the time source and event bus of the container that is flushed and closed with it, and `Resolver.logger` |
+| `kontext-failure` | `com.davils:kontext-failure` | `ModuleBuilder.failures`, the failure handler of Knot as a single with the telemetry and the shutdown of the container, and `Shutdown.adoptFailures`, which drains it in a shutdown of Knot |
 | `kontext-testing` | `com.davils:kontext-testing` | `testContainer` with replaced modules, the test profiles and recording and failing sinks |
 | `kontext-bom` | `com.davils:kontext-bom` | The bill of materials of every module |
 | `kontext-benchmark` | - | JMH throughput benchmarks of resolution, never published |
@@ -175,9 +178,10 @@ Kontext is built so that a mistake of a caller fails closed.
   `kontext.root` composes them for the root project. A new concern gets a plugin of its own, never a block in a
   composing plugin.
 - Dependencies are declared in `gradle/libs.versions.toml`. `kontext-core` depends on `kore-core`, `kollect-core`, `konfetti-core`,
-  `kontinuity-retry` and `konnect-internet-protocol`, `kontext-environment` and `kontext-shutdown` on Knot and
-  `kontext-kaml` on kaml, and the tests on `kore-testing`. kontinuity and Konnect are direct dependencies of the core,
-  with safe defaults active, never an optional module. Libraries of JetBrains and of Davils may be added when they are needed; every other dependency
+  `kontinuity-retry` and `konnect-internet-protocol`, `kontext-environment` and `kontext-shutdown` on Knot,
+  `kontext-kaml` on kaml, `kontext-krypt` on `krypt-core`, `kontext-kheck` on `kheck-api` and `kheck-core`,
+  `kontext-failure` on `kontext-shutdown` and `knot-failure`, and the tests on `kore-testing`. kontinuity and Konnect
+  are direct dependencies of the core, with safe defaults active, never an optional module. Libraries of JetBrains and of Davils may be added when they are needed; every other dependency
   needs the approval of a maintainer.
 - Only `repo.davils.com` serves `com.davils` and its subgroups, through `exclusiveContent`. Everything else comes
   from Maven Central, except the Gradle plugins `kotlin-dsl`, `kotlinx-benchmark-plugin` and
