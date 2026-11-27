@@ -10,7 +10,7 @@ rules of Kore and is published under the Apache License 2.0, with security first
 
 | Module | Artifact | Purpose |
 |---|---|---|
-| `kontext-core` | `com.davils:kontext-core` | Modules and their DSL (lambda and constructor definitions, suspending definitions, variants, lazy modules), containers, scopes with ids and links, child containers, typed parameters, properties, dynamic loading, holders, components, extensions, fallbacks, retention, validation, verification, the sinks and the meters, spans, health and events of a container, and Java interop on the JVM |
+| `kontext-core` | `com.davils:kontext-core` | Modules and their DSL (lambda and constructor definitions, suspending definitions, variants, lazy modules), containers, scopes with ids and links, child containers, typed parameters, properties, dynamic loading, holders, components, extensions, fallbacks, retention, validation, verification, the sinks and the meters, spans, health and events of a container, the retry of suspending creations and the environment of kontinuity, network properties of Konnect, and Java interop on the JVM |
 | `kontext-environment` | `com.davils:kontext-environment` | A `PropertySource` over the environment variables of Knot |
 | `kontext-shutdown` | `com.davils:kontext-shutdown` | `Shutdown.adopt`, which closes a container in its phase of a shutdown of [Knot](https://github.com/davils-com/knot) |
 | `kontext-kaml` | `com.davils:kontext-kaml` | `YamlPropertySource` and `PropertiesBuilder.yaml`, properties from YAML text the application supplies, parsed by [kaml](https://github.com/davils-com/kaml) within its limits |
@@ -174,8 +174,10 @@ Kontext is built so that a mistake of a caller fails closed.
   `kontext.kotlin-library` composes them for a module and adds only the class paths the assurance gate reads;
   `kontext.root` composes them for the root project. A new concern gets a plugin of its own, never a block in a
   composing plugin.
-- Dependencies are declared in `gradle/libs.versions.toml`. Kontext depends on `kore-core`, `kollect-core`, `konfetti-core` and `knot-shutdown`, and its tests on
-  `kore-testing`. Libraries of JetBrains and of Davils may be added when they are needed; every other dependency
+- Dependencies are declared in `gradle/libs.versions.toml`. `kontext-core` depends on `kore-core`, `kollect-core`, `konfetti-core`,
+  `kontinuity-retry` and `konnect-internet-protocol`, `kontext-environment` and `kontext-shutdown` on Knot and
+  `kontext-kaml` on kaml, and the tests on `kore-testing`. kontinuity and Konnect are direct dependencies of the core,
+  with safe defaults active, never an optional module. Libraries of JetBrains and of Davils may be added when they are needed; every other dependency
   needs the approval of a maintainer.
 - Only `repo.davils.com` serves `com.davils` and its subgroups, through `exclusiveContent`. Everything else comes
   from Maven Central, except the Gradle plugins `kotlin-dsl`, `kotlinx-benchmark-plugin` and
