@@ -1,0 +1,14 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-kheck>
+final val com.davils.kontext.kheck/DEFAULT_LOGGING_CLOSE_TIMEOUT // com.davils.kontext.kheck/DEFAULT_LOGGING_CLOSE_TIMEOUT|{}DEFAULT_LOGGING_CLOSE_TIMEOUT[0]
+    final fun <get-DEFAULT_LOGGING_CLOSE_TIMEOUT>(): kotlin.time/Duration // com.davils.kontext.kheck/DEFAULT_LOGGING_CLOSE_TIMEOUT.<get-DEFAULT_LOGGING_CLOSE_TIMEOUT>|<get-DEFAULT_LOGGING_CLOSE_TIMEOUT>(){}[0]
+
+final fun (com.davils.kontext.core.definition/ModuleBuilder).com.davils.kontext.kheck/logging(com.davils.kontext.core/Qualifier? = ..., kotlinx.coroutines/CoroutineDispatcher = ..., kotlin.time/Duration = ..., kotlin/Function1<com.davils.kheck.core/LoggingBuilder, kotlin/Unit> = ...): com.davils.kontext.core.definition/Definition<com.davils.kheck.core/Logging> // com.davils.kontext.kheck/logging|logging@com.davils.kontext.core.definition.ModuleBuilder(com.davils.kontext.core.Qualifier?;kotlinx.coroutines.CoroutineDispatcher;kotlin.time.Duration;kotlin.Function1<com.davils.kheck.core.LoggingBuilder,kotlin.Unit>){}[0]
+final fun (com.davils.kontext.core/Resolver).com.davils.kontext.kheck/logger(kotlin/String, com.davils.kontext.core/Qualifier? = ...): com.davils.kheck.api/Logger // com.davils.kontext.kheck/logger|logger@com.davils.kontext.core.Resolver(kotlin.String;com.davils.kontext.core.Qualifier?){}[0]
+final inline fun <#A: reified kotlin/Any> (com.davils.kontext.core/Resolver).com.davils.kontext.kheck/logger(com.davils.kontext.core/Qualifier? = ...): com.davils.kheck.api/Logger // com.davils.kontext.kheck/logger|logger@com.davils.kontext.core.Resolver(com.davils.kontext.core.Qualifier?){0§<kotlin.Any>}[0]

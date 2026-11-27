@@ -1,0 +1,11 @@
+public final class com/davils/kontext/kheck/LoggersKt {
+	public static final fun logger (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;Lcom/davils/kontext/core/Qualifier;)Lcom/davils/kheck/api/Logger;
+	public static synthetic fun logger$default (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;Lcom/davils/kontext/core/Qualifier;ILjava/lang/Object;)Lcom/davils/kheck/api/Logger;
+}
+
+public final class com/davils/kontext/kheck/LoggingDefinitionsKt {
+	public static final fun getDEFAULT_LOGGING_CLOSE_TIMEOUT ()J
+	public static final fun logging-zkXUZaI (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;Lkotlinx/coroutines/CoroutineDispatcher;JLkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/definition/Definition;
+	public static synthetic fun logging-zkXUZaI$default (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;Lkotlinx/coroutines/CoroutineDispatcher;JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/definition/Definition;
+}
+

@@ -29,6 +29,7 @@ check:
       - ":kontext-shutdown:clean"
       - ":kontext-kaml:clean"
       - ":kontext-krypt:clean"
+      - ":kontext-kheck:clean"
       - ":kontext-testing:clean"
     tasks:
       - ":kontext-core:jvmJar"
@@ -36,6 +37,7 @@ check:
       - ":kontext-shutdown:jvmJar"
       - ":kontext-kaml:jvmJar"
       - ":kontext-krypt:jvmJar"
+      - ":kontext-kheck:jvmJar"
       - ":kontext-testing:jvmJar"
     artifacts:
       - "kontext-core/build/libs/*.jar"
@@ -43,6 +45,7 @@ check:
       - "kontext-shutdown/build/libs/*.jar"
       - "kontext-kaml/build/libs/*.jar"
       - "kontext-krypt/build/libs/*.jar"
+      - "kontext-kheck/build/libs/*.jar"
       - "kontext-testing/build/libs/*.jar"
 
 policy:
@@ -75,6 +78,7 @@ publish:
     - ":kontext-shutdown:publishAllPublicationsToDavilsRepository"
     - ":kontext-kaml:publishAllPublicationsToDavilsRepository"
     - ":kontext-krypt:publishAllPublicationsToDavilsRepository"
+    - ":kontext-kheck:publishAllPublicationsToDavilsRepository"
     - ":kontext-testing:publishAllPublicationsToDavilsRepository"
     - ":kontext-bom:publishAllPublicationsToDavilsRepository"
 
@@ -132,6 +136,15 @@ release:
       - path: com/davils/kontext-krypt
         artifact: kontext-krypt
         task: ":kontext-krypt:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-kheck-jvm
+        artifact: kontext-kheck-jvm
+        task: ":kontext-kheck:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-kheck-wasm-js
+        artifact: kontext-kheck-wasm-js
+        task: ":kontext-kheck:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-kheck
+        artifact: kontext-kheck
+        task: ":kontext-kheck:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kontext-testing-jvm
         artifact: kontext-testing-jvm
         task: ":kontext-testing:publishJvmPublicationToDavilsRepository"
@@ -156,6 +169,8 @@ release:
       - "kontext-kaml/build/libs/*.klib"
       - "kontext-krypt/build/libs/*.jar"
       - "kontext-krypt/build/libs/*.klib"
+      - "kontext-kheck/build/libs/*.jar"
+      - "kontext-kheck/build/libs/*.klib"
       - "kontext-testing/build/libs/*.jar"
       - "kontext-testing/build/libs/*.klib"
   github-release:

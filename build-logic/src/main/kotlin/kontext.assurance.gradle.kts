@@ -93,6 +93,7 @@ kreate {
                 ":kontext-shutdown",
                 ":kontext-kaml",
                 ":kontext-krypt",
+                ":kontext-kheck",
                 ":kontext-testing",
                 ":kontext-benchmark",
             )
