@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.0 - 2026-11-27
+
+### Added
+
+- **`kontext-krypt`, krypt in a container.** `cryptoEnvironment { }` declares the `Environment` of krypt as a single
+  with the tracer, the meters and the event bus of the container, so the components krypt builds report next to the
+  container. `secret` and `secretOrNull` read a property as a `SecretText` with `Converters.secretText` of krypt; the
+  secret, its `toString` and a refused value never show the value.
+- **`kontext-kheck`, kheck in a container.** `logging { }` declares a `Logging` of kheck on the time source and the
+  event bus of the container, in a scope of its own, which the container flushes and closes within
+  `DEFAULT_LOGGING_CLOSE_TIMEOUT` when it closes; a logging that does not close in time fails its close in the
+  `CloseReport`. `logger(name)` and `logger<T>()` resolve its loggers.
+- **`kontext-failure`, the failure handler of Knot in a container.** `failures { }` declares the `FailureHandler` of
+  Knot with the tracer, the meters and the event bus of the container and the `Shutdown` it declares as the target of
+  a fatal failure; the container drains it within `DEFAULT_FAILURE_DRAIN_TIMEOUT` and closes it when it closes.
+  `Shutdown.adoptFailures` drains it in the drain phase of a shutdown of Knot and closes it in the release phase,
+  next to `Shutdown.adopt` of `kontext-shutdown`.
+
+### Changed
+
+- **Built on Knot 1.3.0**, with krypt 1.2.0 and kheck 1.0.1 for the new modules.
+
 ## 1.2.0 - 2026-11-27
 
 ### Added
