@@ -1,0 +1,11 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-krypt>
+final fun (com.davils.kontext.core.definition/ModuleBuilder).com.davils.kontext.krypt/cryptoEnvironment(com.davils.kontext.core/Qualifier? = ..., kotlin/Function1<com.davils.krypt.core/EnvironmentBuilder, kotlin/Unit> = ...): com.davils.kontext.core.definition/Definition<com.davils.krypt.core/Environment> // com.davils.kontext.krypt/cryptoEnvironment|cryptoEnvironment@com.davils.kontext.core.definition.ModuleBuilder(com.davils.kontext.core.Qualifier?;kotlin.Function1<com.davils.krypt.core.EnvironmentBuilder,kotlin.Unit>){}[0]
+final fun (com.davils.kontext.core/Resolver).com.davils.kontext.krypt/secret(kotlin/String): com.davils.krypt.core/SecretText // com.davils.kontext.krypt/secret|secret@com.davils.kontext.core.Resolver(kotlin.String){}[0]
+final fun (com.davils.kontext.core/Resolver).com.davils.kontext.krypt/secretOrNull(kotlin/String): com.davils.krypt.core/SecretText? // com.davils.kontext.krypt/secretOrNull|secretOrNull@com.davils.kontext.core.Resolver(kotlin.String){}[0]

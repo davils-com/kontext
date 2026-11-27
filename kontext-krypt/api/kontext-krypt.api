@@ -1,0 +1,10 @@
+public final class com/davils/kontext/krypt/CryptoDefinitionsKt {
+	public static final fun cryptoEnvironment (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;Lkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/definition/Definition;
+	public static synthetic fun cryptoEnvironment$default (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/definition/Definition;
+}
+
+public final class com/davils/kontext/krypt/SecretPropertiesKt {
+	public static final fun secret (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/krypt/core/SecretText;
+	public static final fun secretOrNull (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/krypt/core/SecretText;
+}
+

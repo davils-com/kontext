@@ -28,18 +28,21 @@ check:
       - ":kontext-environment:clean"
       - ":kontext-shutdown:clean"
       - ":kontext-kaml:clean"
+      - ":kontext-krypt:clean"
       - ":kontext-testing:clean"
     tasks:
       - ":kontext-core:jvmJar"
       - ":kontext-environment:jvmJar"
       - ":kontext-shutdown:jvmJar"
       - ":kontext-kaml:jvmJar"
+      - ":kontext-krypt:jvmJar"
       - ":kontext-testing:jvmJar"
     artifacts:
       - "kontext-core/build/libs/*.jar"
       - "kontext-environment/build/libs/*.jar"
       - "kontext-shutdown/build/libs/*.jar"
       - "kontext-kaml/build/libs/*.jar"
+      - "kontext-krypt/build/libs/*.jar"
       - "kontext-testing/build/libs/*.jar"
 
 policy:
@@ -71,6 +74,7 @@ publish:
     - ":kontext-environment:publishAllPublicationsToDavilsRepository"
     - ":kontext-shutdown:publishAllPublicationsToDavilsRepository"
     - ":kontext-kaml:publishAllPublicationsToDavilsRepository"
+    - ":kontext-krypt:publishAllPublicationsToDavilsRepository"
     - ":kontext-testing:publishAllPublicationsToDavilsRepository"
     - ":kontext-bom:publishAllPublicationsToDavilsRepository"
 
@@ -119,6 +123,15 @@ release:
       - path: com/davils/kontext-kaml
         artifact: kontext-kaml
         task: ":kontext-kaml:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-krypt-jvm
+        artifact: kontext-krypt-jvm
+        task: ":kontext-krypt:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-krypt-wasm-js
+        artifact: kontext-krypt-wasm-js
+        task: ":kontext-krypt:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-krypt
+        artifact: kontext-krypt
+        task: ":kontext-krypt:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kontext-testing-jvm
         artifact: kontext-testing-jvm
         task: ":kontext-testing:publishJvmPublicationToDavilsRepository"
@@ -141,6 +154,8 @@ release:
       - "kontext-kaml/build/libs/*.jar"
       - "kontext-shutdown/build/libs/*.klib"
       - "kontext-kaml/build/libs/*.klib"
+      - "kontext-krypt/build/libs/*.jar"
+      - "kontext-krypt/build/libs/*.klib"
       - "kontext-testing/build/libs/*.jar"
       - "kontext-testing/build/libs/*.klib"
   github-release:

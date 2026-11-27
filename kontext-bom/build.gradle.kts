@@ -30,6 +30,7 @@ dependencies {
         api(project(":kontext-environment"))
         api(project(":kontext-shutdown"))
         api(project(":kontext-kaml"))
+        api(project(":kontext-krypt"))
         api(project(":kontext-testing"))
     }
 }
