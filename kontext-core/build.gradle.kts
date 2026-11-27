@@ -29,6 +29,8 @@ dependencies {
     commonMainApi(libs.kore.core)
     commonMainApi(libs.kollect.core)
     commonMainApi(libs.konfetti.core)
+    commonMainApi(libs.kontinuity.retry)
+    commonMainApi(libs.konnect.internet.protocol)
     commonMainApi(libs.kotlinx.coroutines.core)
 }
 

@@ -6,6 +6,8 @@ konfetti = "1.1.0"
 kollect = "1.1.0"
 knot = "1.2.0"
 kaml = "1.0.1"
+kontinuity = "1.2.0"
+konnect = "1.2.0"
 coroutines = "1.11.0"
 # The benchmark runtime is released together with the kotlinx-benchmark plugin that Kreate brings along.
 kotlinx-benchmark = "0.5.0"
@@ -27,6 +29,8 @@ knot-shutdown = { module = "com.davils:knot-shutdown", version.ref = "knot" }
 knot-testing = { module = "com.davils:knot-testing", version.ref = "knot" }
 kaml-core = { module = "com.davils:kaml-core", version.ref = "kaml" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kontinuity-retry = { module = "com.davils:kontinuity-retry", version.ref = "kontinuity" }
+konnect-internet-protocol = { module = "com.davils:konnect-internet-protocol", version.ref = "konnect" }
 
 [bundles]
 build-logic = [

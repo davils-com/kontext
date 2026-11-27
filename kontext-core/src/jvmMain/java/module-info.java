@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-@SuppressWarnings("module")
+@SuppressWarnings({"module", "requires-automatic"})
 module com.davils.kontext.core {
     requires transitive kotlin.stdlib;
     requires transitive com.davils.kore.core;
     requires transitive com.davils.konfetti.core;
     requires transitive com.davils.kollect.core;
+    requires transitive com.davils.kontinuity.retry;
+    requires com.davils.konnect.core;
+    requires com.davils.konnect.internetprotocol;
     requires transitive kotlinx.coroutines.core;
 
     exports com.davils.kontext.core;
