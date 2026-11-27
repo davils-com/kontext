@@ -67,6 +67,7 @@ private const val UNNAMED_EXTENSION: String = "unnamed"
 internal class ContainerRuntime(val configuration: ContainerConfiguration) : Host(platformGuard()) {
     private val stateFlow = MutableStateFlow(ContainerState.Starting)
     private val closeHandlers = mutableListOf<() -> Unit>()
+    private val creations: Creations = Creations(configuration)
     private val ready = CompletableDeferred<Unit>()
     private val closure = CompletableDeferred<Unit>()
 
@@ -196,15 +197,17 @@ internal class ContainerRuntime(val configuration: ContainerConfiguration) : Hos
             parameters = parameters,
         )
         val mark = timeSource.markNow()
-        val produced = attempted { context.create() }
-        val instance = produced.getOrElse { cause ->
-            throw wrapped(
-                located.declaration.key,
-                cause,
-                trail.keys.dropLast(1),
-            )
+        return creations.produced {
+            val produced = attempted { context.create() }
+            val instance = produced.getOrElse { cause ->
+                throw wrapped(
+                    located.declaration.key,
+                    cause,
+                    trail.keys.dropLast(1),
+                )
+            }
+            registered(located = located, instance = instance, mark = mark, trail = trail)
         }
-        return registered(located = located, instance = instance, mark = mark, trail = trail)
     }
 
     fun failed(failure: ResolutionFailure): ResolutionException {

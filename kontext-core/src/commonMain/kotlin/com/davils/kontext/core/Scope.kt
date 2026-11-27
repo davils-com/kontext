@@ -17,6 +17,7 @@
 package com.davils.kontext.core
 
 import com.davils.kontext.core.container.CloseReport
+import com.davils.kontext.core.container.ContainerConfiguration
 import com.davils.kontext.core.internal.Properties
 import com.davils.kontext.core.internal.ScopeRuntime
 import com.davils.kontext.core.parameter.Parameters
@@ -166,6 +167,8 @@ public class Scope internal constructor(private val runtime: ScopeRuntime) : Res
     override fun detached(): Resolver = runtime.context
 
     override fun properties(): Properties = runtime.runtime.properties
+
+    override fun configuration(): ContainerConfiguration = runtime.runtime.configuration
 
     internal fun runtime(): ScopeRuntime = runtime
 

@@ -36,6 +36,7 @@ import com.davils.kontext.core.internal.auditOf
 import com.davils.kontext.core.internal.profileDeclaration
 import com.davils.kontext.core.observe.ContainerSink
 import com.davils.kontext.core.property.PropertySource
+import com.davils.kontinuity.retry.RetryConfig
 import com.davils.kore.core.annotation.DavilsInternal
 import com.davils.kore.core.collection.immutableList
 import com.davils.kore.core.identity.UuidV7
@@ -45,6 +46,8 @@ import com.davils.kore.core.validation.ValidationScope
 import com.davils.kore.core.validation.violation.ViolationCode
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.TimeSource
+import com.davils.kontinuity.core.Environment as ResilienceEnvironment
+import com.davils.kontinuity.core.environment as resilienceEnvironment
 
 /**
  * The validated configuration of a container, built by [ContainerBuilder].
@@ -108,6 +111,27 @@ public class ContainerConfiguration internal constructor(builder: ContainerBuild
      * @since 1.0.0
      */
     public val timeSource: TimeSource.WithComparableMarks = builder.timeSource
+
+    /**
+     * How the creation of a suspending definition that throws is tried again, or `null` to create once.
+     *
+     * @since 1.2.0
+     */
+    public val creationRetry: RetryConfig? = builder.creationRetry
+
+    /**
+     * The environment of kontinuity that reports to the [tracer], the [meters] and the [events] of the container and
+     * measures time on its [timeSource], so a retry, a circuit breaker or a cache a definition builds reports next to
+     * the container.
+     *
+     * @since 1.2.0
+     */
+    public val resilience: ResilienceEnvironment = resilienceEnvironment {
+        tracer = builder.tracer
+        timeSource = builder.timeSource
+        builder.meters?.let { registry -> meters(registry) }
+        builder.events?.let { bus -> events(bus) }
+    }
 
     /**
      * The coroutine context of the coroutine scope of the container.

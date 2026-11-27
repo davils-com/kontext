@@ -21,6 +21,7 @@ import com.davils.kollect.core.health.HealthIndicator
 import com.davils.kollect.core.health.ReasonCode
 import com.davils.kontext.core.container.CloseReport
 import com.davils.kontext.core.container.ContainerBuilder
+import com.davils.kontext.core.container.ContainerConfiguration
 import com.davils.kontext.core.container.ContainerState
 import com.davils.kontext.core.error.ScopeNotOpenException
 import com.davils.kontext.core.internal.ContainerRuntime
@@ -277,6 +278,8 @@ public class Container internal constructor(private val runtime: ContainerRuntim
     override fun detached(): Resolver = runtime.context
 
     override fun properties(): Properties = runtime.properties
+
+    override fun configuration(): ContainerConfiguration = runtime.configuration
 
     internal fun runtime(): ContainerRuntime = runtime
 

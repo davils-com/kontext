@@ -16,12 +16,14 @@
 
 package com.davils.kontext.core
 
+import com.davils.kontext.core.container.ContainerConfiguration
 import com.davils.kontext.core.internal.Properties
 import com.davils.kontext.core.parameter.Parameters
 import com.davils.kontext.core.property.PropertyKey
 import com.davils.kore.core.arguments.conversion.Converter
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
+import com.davils.kontinuity.core.Environment as ResilienceEnvironment
 
 /**
  * Resolves instances by their type and qualifier: a container, a scope, and the receiver of every factory.
@@ -259,8 +261,20 @@ public abstract class Resolver internal constructor() {
     public fun <T> propertyOrNull(key: String, converter: Converter<T>): T? =
         properties().converted(PropertyKey(key), converter)
 
+    /**
+     * The environment of kontinuity of the container, which reports to its tracer, meters and event bus and measures
+     * time on its time source, so a retry, a circuit breaker or a cache a definition builds reports next to the
+     * container, such as `retry("payments", resilience())`.
+     *
+     * @return the environment.
+     * @since 1.2.0
+     */
+    public fun resilience(): ResilienceEnvironment = configuration().resilience
+
     @PublishedApi
     internal abstract fun detached(): Resolver
+
+    internal abstract fun configuration(): ContainerConfiguration
 
     internal abstract fun properties(): Properties
 }

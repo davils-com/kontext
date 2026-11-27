@@ -182,6 +182,7 @@ public abstract class com/davils/kontext/core/Resolver {
 	public final fun property (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;)Ljava/lang/Object;
 	public final fun property (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun propertyOrNull (Ljava/lang/String;Lcom/davils/kore/core/arguments/conversion/Converter;)Ljava/lang/Object;
+	public final fun resilience ()Lcom/davils/kontinuity/core/Environment;
 	public abstract fun resolve (Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;)Ljava/lang/Object;
 	public static synthetic fun resolve$default (Lcom/davils/kontext/core/Resolver;Lcom/davils/kontext/core/DefinitionKey;Lcom/davils/kontext/core/parameter/Parameters;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun resolveAll (Lkotlin/reflect/KType;)Ljava/util/List;
@@ -307,6 +308,7 @@ public final class com/davils/kontext/core/container/ContainerBuilder : com/davi
 	public final fun extensions ([Lcom/davils/kontext/core/extension/ContainerExtension;)V
 	public final fun fallbacks ([Lcom/davils/kontext/core/extension/ResolutionFallback;)V
 	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getCreationRetry ()Lcom/davils/kontinuity/retry/RetryConfig;
 	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
 	public final fun getIds ()Lcom/davils/kore/core/identity/generator/UuidGenerator;
 	public final fun getMeters ()Lcom/davils/kollect/core/MeterRegistry;
@@ -323,6 +325,7 @@ public final class com/davils/kontext/core/container/ContainerBuilder : com/davi
 	public final fun properties (Lkotlin/jvm/functions/Function1;)V
 	public final fun replace ([Lcom/davils/kontext/core/Module;)V
 	public final fun setCoroutineContext (Lkotlin/coroutines/CoroutineContext;)V
+	public final fun setCreationRetry (Lcom/davils/kontinuity/retry/RetryConfig;)V
 	public final fun setEvents (Lcom/davils/konfetti/core/EventBus;)V
 	public final fun setIds (Lcom/davils/kore/core/identity/generator/UuidGenerator;)V
 	public final fun setMeters (Lcom/davils/kollect/core/MeterRegistry;)V
@@ -336,11 +339,13 @@ public final class com/davils/kontext/core/container/ContainerBuilder : com/davi
 
 public final class com/davils/kontext/core/container/ContainerBuilder$Companion {
 	public final fun getCHILD-35NQdnY ()Ljava/lang/String;
+	public final fun getDEFAULT_CREATION_RETRY ()Lcom/davils/kontinuity/retry/RetryConfig;
 	public final fun getROOT-35NQdnY ()Ljava/lang/String;
 }
 
 public final class com/davils/kontext/core/container/ContainerConfiguration : com/davils/kore/core/validation/Validatable {
 	public final fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getCreationRetry ()Lcom/davils/kontinuity/retry/RetryConfig;
 	public final fun getEvents ()Lcom/davils/konfetti/core/EventBus;
 	public final fun getExtensions ()Ljava/util/List;
 	public final fun getFallbacks ()Ljava/util/List;
@@ -352,6 +357,7 @@ public final class com/davils/kontext/core/container/ContainerConfiguration : co
 	public final fun getProfile-xuI1QKg ()Ljava/lang/String;
 	public final fun getPropertySources ()Ljava/util/List;
 	public final fun getReplacements ()Ljava/util/List;
+	public final fun getResilience ()Lcom/davils/kontinuity/core/Environment;
 	public final fun getScopeLimit ()I
 	public final fun getSink ()Lcom/davils/kontext/core/observe/ContainerSink;
 	public final fun getTimeSource ()Lkotlin/time/TimeSource$WithComparableMarks;
@@ -766,6 +772,15 @@ public final class com/davils/kontext/core/parameter/Parameters$Companion {
 public final class com/davils/kontext/core/parameter/ParametersBuilder {
 	public final fun put (Ljava/lang/Object;Lkotlin/reflect/KType;)V
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/davils/kontext/core/property/NetworkPropertiesKt {
+	public static final fun ipAddress (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/konnect/internetprotocol/address/IpAddress;
+	public static final fun ipAddressOrNull (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/konnect/internetprotocol/address/IpAddress;
+	public static final fun ipNetwork (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/konnect/internetprotocol/network/IpNetwork;
+	public static final fun port (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)I
+	public static final fun portOrNull (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/konnect/core/port/Port;
+	public static final fun portRange (Lcom/davils/kontext/core/Resolver;Ljava/lang/String;)Lcom/davils/konnect/core/port/PortRange;
 }
 
 public final class com/davils/kontext/core/property/PropertiesBuilder {

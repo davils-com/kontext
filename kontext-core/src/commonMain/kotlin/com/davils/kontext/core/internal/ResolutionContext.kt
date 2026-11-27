@@ -19,6 +19,7 @@ package com.davils.kontext.core.internal
 import com.davils.kontext.core.DefinitionContext
 import com.davils.kontext.core.DefinitionKey
 import com.davils.kontext.core.Resolver
+import com.davils.kontext.core.container.ContainerConfiguration
 import com.davils.kontext.core.error.ResolutionFailure
 import com.davils.kontext.core.parameter.Parameters
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +68,8 @@ internal class ResolutionContext(
         ResolutionContext(runtime = runtime, scope = scope, trail = trail.detached(), parameters = Parameters.EMPTY)
 
     override fun properties(): Properties = runtime.properties
+
+    override fun configuration(): ContainerConfiguration = runtime.configuration
 
     private suspend fun locateWhenReady(key: DefinitionKey): Located? {
         val located = runtime.locate(scope = scope, key = key, path = trail.keys)

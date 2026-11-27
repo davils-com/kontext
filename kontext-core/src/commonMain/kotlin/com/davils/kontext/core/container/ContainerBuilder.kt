@@ -31,6 +31,11 @@ import com.davils.kontext.core.internal.ContainerRuntime
 import com.davils.kontext.core.observe.ContainerSink
 import com.davils.kontext.core.property.PropertiesBuilder
 import com.davils.kontext.core.property.PropertySource
+import com.davils.kontinuity.core.backoff.exponential
+import com.davils.kontinuity.core.backoff.jittered
+import com.davils.kontinuity.core.backoff.proportional
+import com.davils.kontinuity.retry.RetryConfig
+import com.davils.kontinuity.retry.retryConfig
 import com.davils.kore.core.annotation.DavilsDsl
 import com.davils.kore.core.dsl.ValidatingBuilder
 import com.davils.kore.core.identity.UuidV7
@@ -38,6 +43,9 @@ import com.davils.kore.core.identity.generator.UuidGenerator
 import com.davils.kore.core.identity.generator.UuidV7Generator
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 
 private const val SUBJECT: String = "container"
@@ -119,6 +127,16 @@ public class ContainerBuilder internal constructor(
      * @since 1.0.0
      */
     public var timeSource: TimeSource.WithComparableMarks = inheritedOr(TimeSource.Monotonic) { timeSource }
+
+    /**
+     * How the creation of a suspending definition that throws is tried again, by the retry of kontinuity, or `null`
+     * to create once; [DEFAULT_CREATION_RETRY] unless it is set, and inherited by a child. A suspending single that
+     * connects to a service which starts with the application then waits for it instead of failing the container.
+     * The errors of Kontext itself, such as a missing definition, are never tried again.
+     *
+     * @since 1.2.0
+     */
+    public var creationRetry: RetryConfig? = inheritedOr<RetryConfig?>(DEFAULT_CREATION_RETRY) { creationRetry }
 
     /**
      * The coroutine context of the coroutine scope of the container, such as a dispatcher and a parent job; the
@@ -263,5 +281,21 @@ public class ContainerBuilder internal constructor(
          * @since 1.0.0
          */
         public val CHILD: ContainerName = ContainerName("child")
+
+        private const val DEFAULT_CREATION_ATTEMPTS: Int = 3
+        private val FIRST_CREATION_DELAY: Duration = 100.milliseconds
+        private val LONGEST_CREATION_DELAY: Duration = 2.seconds
+
+        /**
+         * The retry of a suspending creation unless another one is given: 3 attempts with an exponential backoff from
+         * 100 milliseconds to 2 seconds, spread by a proportional jitter.
+         *
+         * @since 1.2.0
+         */
+        public val DEFAULT_CREATION_RETRY: RetryConfig = retryConfig {
+            maxAttempts = DEFAULT_CREATION_ATTEMPTS
+            val growing = exponential(initial = FIRST_CREATION_DELAY, maximum = LONGEST_CREATION_DELAY)
+            backoff = growing.jittered(proportional())
+        }
     }
 }
