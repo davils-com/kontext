@@ -1,0 +1,13 @@
+// Klib ABI Dump
+// Targets: [wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.davils:kontext-failure>
+final val com.davils.kontext.failure/DEFAULT_FAILURE_DRAIN_TIMEOUT // com.davils.kontext.failure/DEFAULT_FAILURE_DRAIN_TIMEOUT|{}DEFAULT_FAILURE_DRAIN_TIMEOUT[0]
+    final fun <get-DEFAULT_FAILURE_DRAIN_TIMEOUT>(): kotlin.time/Duration // com.davils.kontext.failure/DEFAULT_FAILURE_DRAIN_TIMEOUT.<get-DEFAULT_FAILURE_DRAIN_TIMEOUT>|<get-DEFAULT_FAILURE_DRAIN_TIMEOUT>(){}[0]
+
+final fun (com.davils.knot.shutdown/Shutdown).com.davils.kontext.failure/adoptFailures(com.davils.kontext.core/Container, com.davils.kontext.core/Qualifier? = ..., kotlin.time/Duration = ..., kotlin/String = ...): com.davils.knot.shutdown/ShutdownRegistration // com.davils.kontext.failure/adoptFailures|adoptFailures@com.davils.knot.shutdown.Shutdown(com.davils.kontext.core.Container;com.davils.kontext.core.Qualifier?;kotlin.time.Duration;kotlin.String){}[0]
+final fun (com.davils.kontext.core.definition/ModuleBuilder).com.davils.kontext.failure/failures(com.davils.kontext.core/Qualifier? = ..., kotlin.time/Duration = ..., kotlin/Function1<com.davils.knot.failure/FailureHandlerBuilder, kotlin/Unit> = ...): com.davils.kontext.core.definition/Definition<com.davils.knot.failure/FailureHandler> // com.davils.kontext.failure/failures|failures@com.davils.kontext.core.definition.ModuleBuilder(com.davils.kontext.core.Qualifier?;kotlin.time.Duration;kotlin.Function1<com.davils.knot.failure.FailureHandlerBuilder,kotlin.Unit>){}[0]

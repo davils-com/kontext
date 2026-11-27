@@ -94,6 +94,7 @@ kreate {
                 ":kontext-kaml",
                 ":kontext-krypt",
                 ":kontext-kheck",
+                ":kontext-failure",
                 ":kontext-testing",
                 ":kontext-benchmark",
             )

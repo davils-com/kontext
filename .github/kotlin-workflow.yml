@@ -30,6 +30,7 @@ check:
       - ":kontext-kaml:clean"
       - ":kontext-krypt:clean"
       - ":kontext-kheck:clean"
+      - ":kontext-failure:clean"
       - ":kontext-testing:clean"
     tasks:
       - ":kontext-core:jvmJar"
@@ -38,6 +39,7 @@ check:
       - ":kontext-kaml:jvmJar"
       - ":kontext-krypt:jvmJar"
       - ":kontext-kheck:jvmJar"
+      - ":kontext-failure:jvmJar"
       - ":kontext-testing:jvmJar"
     artifacts:
       - "kontext-core/build/libs/*.jar"
@@ -46,6 +48,7 @@ check:
       - "kontext-kaml/build/libs/*.jar"
       - "kontext-krypt/build/libs/*.jar"
       - "kontext-kheck/build/libs/*.jar"
+      - "kontext-failure/build/libs/*.jar"
       - "kontext-testing/build/libs/*.jar"
 
 policy:
@@ -79,6 +82,7 @@ publish:
     - ":kontext-kaml:publishAllPublicationsToDavilsRepository"
     - ":kontext-krypt:publishAllPublicationsToDavilsRepository"
     - ":kontext-kheck:publishAllPublicationsToDavilsRepository"
+    - ":kontext-failure:publishAllPublicationsToDavilsRepository"
     - ":kontext-testing:publishAllPublicationsToDavilsRepository"
     - ":kontext-bom:publishAllPublicationsToDavilsRepository"
 
@@ -145,6 +149,15 @@ release:
       - path: com/davils/kontext-kheck
         artifact: kontext-kheck
         task: ":kontext-kheck:publishKotlinMultiplatformPublicationToDavilsRepository"
+      - path: com/davils/kontext-failure-jvm
+        artifact: kontext-failure-jvm
+        task: ":kontext-failure:publishJvmPublicationToDavilsRepository"
+      - path: com/davils/kontext-failure-wasm-js
+        artifact: kontext-failure-wasm-js
+        task: ":kontext-failure:publishWasmJsPublicationToDavilsRepository"
+      - path: com/davils/kontext-failure
+        artifact: kontext-failure
+        task: ":kontext-failure:publishKotlinMultiplatformPublicationToDavilsRepository"
       - path: com/davils/kontext-testing-jvm
         artifact: kontext-testing-jvm
         task: ":kontext-testing:publishJvmPublicationToDavilsRepository"
@@ -171,6 +184,8 @@ release:
       - "kontext-krypt/build/libs/*.klib"
       - "kontext-kheck/build/libs/*.jar"
       - "kontext-kheck/build/libs/*.klib"
+      - "kontext-failure/build/libs/*.jar"
+      - "kontext-failure/build/libs/*.klib"
       - "kontext-testing/build/libs/*.jar"
       - "kontext-testing/build/libs/*.klib"
   github-release:

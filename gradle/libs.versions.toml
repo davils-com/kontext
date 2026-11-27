@@ -28,6 +28,7 @@ konfetti-testing = { module = "com.davils:konfetti-testing", version.ref = "konf
 kollect-core = { module = "com.davils:kollect-core", version.ref = "kollect" }
 knot-environment = { module = "com.davils:knot-environment", version.ref = "knot" }
 knot-shutdown = { module = "com.davils:knot-shutdown", version.ref = "knot" }
+knot-failure = { module = "com.davils:knot-failure", version.ref = "knot" }
 knot-testing = { module = "com.davils:knot-testing", version.ref = "knot" }
 kaml-core = { module = "com.davils:kaml-core", version.ref = "kaml" }
 krypt-core = { module = "com.davils:krypt-core", version.ref = "krypt" }

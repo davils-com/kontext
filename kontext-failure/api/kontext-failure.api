@@ -1,0 +1,11 @@
+public final class com/davils/kontext/failure/FailureDefinitionsKt {
+	public static final fun failures-exY8QGI (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;JLkotlin/jvm/functions/Function1;)Lcom/davils/kontext/core/definition/Definition;
+	public static synthetic fun failures-exY8QGI$default (Lcom/davils/kontext/core/definition/ModuleBuilder;Lcom/davils/kontext/core/Qualifier;JLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/davils/kontext/core/definition/Definition;
+	public static final fun getDEFAULT_FAILURE_DRAIN_TIMEOUT ()J
+}
+
+public final class com/davils/kontext/failure/FailureShutdownsKt {
+	public static final fun adoptFailures-zkXUZaI (Lcom/davils/knot/shutdown/Shutdown;Lcom/davils/kontext/core/Container;Lcom/davils/kontext/core/Qualifier;JLjava/lang/String;)Lcom/davils/knot/shutdown/ShutdownRegistration;
+	public static synthetic fun adoptFailures-zkXUZaI$default (Lcom/davils/knot/shutdown/Shutdown;Lcom/davils/kontext/core/Container;Lcom/davils/kontext/core/Qualifier;JLjava/lang/String;ILjava/lang/Object;)Lcom/davils/knot/shutdown/ShutdownRegistration;
+}
+
